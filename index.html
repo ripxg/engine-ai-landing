@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Engine AI - Automate What Drains You</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* CSS Custom Properties */
+    :root {
+      --color-bg: #0a0a0f;
+      --color-bg-elevated: #0f0f18;
+      --color-text-primary: #ffffff;
+      --color-text-secondary: #a0a0a0;
+      --color-text-muted: #6a6a75;
+      --color-accent: #00f0ff;
+      --color-accent-dark: #00c0cc;
+      --color-border: #1a1a24;
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body: 'Source Serif Pro', Georgia, serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --easing: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Reset & Base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--color-bg);
+      color: var(--color-text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Typography */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 8vw, 6rem);
+      font-weight: 600;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+    }
+
+    h3 {
+      font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    }
+
+    p {
+      font-size: clamp(1rem, 1.25vw, 1.125rem);
+      color: var(--color-text-secondary);
+      max-width: 65ch;
+    }
+
+    /* Utility Classes */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 clamp(1.5rem, 5vw, 4rem);
+    }
+
+    .text-center { text-align: center; }
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .justify-between { justify-content: space-between; }
+    .gap-4 { gap: 1rem; }
+    .gap-8 { gap: 2rem; }
+    .gap-12 { gap: 3rem; }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-60px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes countUp {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .animate-in {
+      opacity: 0;
+      animation: fadeInUp 0.8s var(--easing) forwards;
+    }
+
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    .delay-400 { animation-delay: 0.4s; }
+    .delay-600 { animation-delay: 0.6s; }
+    .delay-800 { animation-delay: 0.8s; }
+
+    .visible {
+      opacity: 1 !important;
+      transform: translateY(0) !important;
+    }
+
+    /* Canvas Background */
+    #bubbling-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 1.5rem 0;
+      background: linear-gradient(to bottom, var(--color-bg) 0%, transparent 100%);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-links {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+      }
+    }
+
+    .nav-links a {
+      color: var(--color-text-secondary);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: color 0.3s var(--easing);
+    }
+
+    .nav-links a:hover {
+      color: var(--color-text-primary);
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 80px;
+      position: relative;
+    }
+
+    .hero-content {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(0, 240, 255, 0.05);
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      border-radius: 100px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--color-accent);
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--color-accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero h1 {
+      margin-bottom: 1.5rem;
+      color: var(--color-text-primary);
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--color-text-secondary);
+      margin-bottom: 2rem;
+      line-height: 1.7;
+    }
+
+    .hero-story {
+      font-style: italic;
+      color: var(--color-text-muted);
+      margin-bottom: 3rem;
+      padding: 2rem;
+      border-left: 2px solid var(--color-accent);
+      text-align: left;
+      background: rgba(0, 240, 255, 0.02);
+      border-radius: 0 8px 8px 0;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 1rem 2rem;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.3s var(--easing);
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--color-accent);
+      color: var(--color-bg);
+      box-shadow: 0 4px 20px rgba(0, 240, 255, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: var(--color-accent-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 240, 255, 0.4);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--color-text-primary);
+      border: 1px solid var(--color-border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+
+    /* Problem Section */
+    .problem-section {
+      padding: 8rem 0;
+      background: var(--color-bg);
+    }
+
+    .problem-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      margin-top: 4rem;
+    }
+
+    @media (min-width: 768px) {
+      .problem-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .problem-card {
+      padding: 2rem;
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.01);
+      transition: all 0.4s var(--easing);
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .problem-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .problem-card:hover {
+      border-color: rgba(0, 240, 255, 0.3);
+      transform: translateY(-8px);
+      background: rgba(0, 240, 255, 0.02);
+    }
+
+    .problem-card .icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 1.5rem;
+      color: var(--color-text-muted);
+      transition: color 0.3s var(--easing);
+    }
+
+    .problem-card:hover .icon {
+      color: var(--color-accent);
+    }
+
+    .problem-card h3 {
+      margin-bottom: 1rem;
+      color: var(--color-text-primary);
+    }
+
+    /* Calculator Section */
+    .calculator-section {
+      padding: 8rem 0;
+      background: linear-gradient(to bottom, var(--color-bg) 0%, var(--color-bg-elevated) 100%);
+    }
+
+    .calculator-container {
+      max-width: 800px;
+      margin: 4rem auto 0;
+      padding: 3rem;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+    }
+
+    .calculator-slider-container {
+      margin: 3rem 0;
+    }
+
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .slider-label span {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+    }
+
+    .slider-value {
+      font-family: var(--font-mono);
+      font-size: 2rem;
+      font-weight: 500;
+      color: var(--color-accent);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--color-border);
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+      transition: transform 0.2s var(--easing);
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--color-accent);
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
+    }
+
+    .calculator-results {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--color-border);
+    }
+
+    @media (min-width: 640px) {
+      .calculator-results {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .result-item {
+      text-align: center;
+    }
+
+    .result-label {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      margin-bottom: 0.5rem;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .result-value {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .result-context {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      font-style: italic;
+    }
+
+    /* How It Works */
+    .how-section {
+      padding: 8rem 0;
+      background: var(--color-bg-elevated);
+    }
+
+    .steps-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 4rem;
+      margin-top: 4rem;
+    }
+
+    @media (min-width: 768px) {
+      .steps-container {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .step {
+      position: relative;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s var(--easing);
+    }
+
+    .step.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .step-number {
+      font-family: var(--font-mono);
+      font-size: 4rem;
+      font-weight: 500;
+      color: rgba(0, 240, 255, 0.15);
+      position: absolute;
+      top: -2rem;
+      left: -1rem;
+      line-height: 1;
+    }
+
+    .step-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .step h3 {
+      margin-bottom: 1rem;
+      color: var(--color-text-primary);
+    }
+
+    /* Testimonials */
+    .testimonials-section {
+      padding: 8rem 0;
+      background: var(--color-bg);
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-top: 4rem;
+    }
+
+    @media (min-width: 768px) {
+      .testimonials-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .testimonial-card {
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      transition: all 0.4s var(--easing);
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .testimonial-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .testimonial-card:hover {
+      border-color: rgba(0, 240, 255, 0.2);
+      background: rgba(0, 240, 255, 0.01);
+    }
+
+    .testimonial-quote {
+      font-size: 1.125rem;
+      color: var(--color-text-primary);
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+      font-style: italic;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .author-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      color: var(--color-bg);
+    }
+
+    .author-info .name {
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+
+    .author-info .role {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+    }
+
+    /* Features Grid */
+    .features-section {
+      padding: 8rem 0;
+      background: var(--color-bg-elevated);
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin-top: 4rem;
+    }
+
+    @media (min-width: 768px) {
+      .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .feature-row {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      padding: 2rem;
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      transition: all 0.4s var(--easing);
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+
+    .feature-row.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .feature-row:hover {
+      border-color: rgba(0, 240, 255, 0.2);
+    }
+
+    @media (min-width: 768px) {
+      .feature-row {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .feature-row h3 {
+      color: var(--color-text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-row p {
+      font-size: 0.9375rem;
+      margin: 0;
+    }
+
+    .feature-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: rgba(0, 240, 255, 0.1);
+      border-radius: 100px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--color-accent);
+      white-space: nowrap;
+    }
+
+    /* Final CTA */
+    .cta-section {
+      padding: 10rem 0;
+      background: var(--color-bg);
+      text-align: center;
+    }
+
+    .cta-content {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .cta-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 3rem;
+    }
+
+    @media (min-width: 640px) {
+      .cta-buttons {
+        flex-direction: row;
+        justify-content: center;
+      }
+    }
+
+    .urgency-note {
+      margin-top: 2rem;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+    }
+
+    /* Footer */
+    footer {
+      padding: 4rem 0;
+      border-top: 1px solid var(--color-border);
+      background: var(--color-bg);
+    }
+
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    @media (min-width: 768px) {
+      .footer-content {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .footer-links a {
+      color: var(--color-text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.3s var(--easing);
+    }
+
+    .footer-links a:hover {
+      color: var(--color-text-primary);
+    }
+
+    .footer-copyright {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+    }
+
+    /* Responsive */
+    @media (max-width: 767px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      
+      .calculator-container {
+        padding: 1.5rem;
+      }
+      
+      .result-value {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Canvas Background -->
+  <canvas id="bubbling-canvas"></canvas>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <a href="#" class="logo">Engine AI</a>
+      <div class="nav-links">
+        <a href="#how-it-works">How It Works</a>
+        <a href="#features">Features</a>
+        <a href="#testimonials">Stories</a>
+        <a href="#" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.875rem;">Start Free</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container hero-content">
+      <div class="hero-badge animate-in">Now in Beta</div>
+      
+      <h1 class="animate-in delay-100">
+        That spreadsheet isn't running your business.<br>
+        <span style="color: var(--color-text-secondary);">You are.</span>
+      </h1>
+      
+      <p class="hero-subtitle animate-in delay-200">
+        And you're exhausted. The manual work, the late nights, the repetitive tasks that drain your energy.
+      </p>
+      
+      <div class="hero-story animate-in delay-400">
+        <strong>Meet Sarah.</strong> She runs a bakery. At 2 AM she's still responding to customer emails, updating inventory, and reconciling orders. Tomorrow she'll have an AI that handles all three while she sleeps.
+      </div>
+      
+      <div class="flex justify-center gap-4 animate-in delay-600">
+        <a href="#calculator" class="btn btn-primary">Start Automating Free</a>
+        <a href="#demo" class="btn btn-secondary">Schedule Demo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem Section -->
+  <section class="problem-section">
+    <div class="container">
+      <div class="text-center">
+        <h2 class="animate-in">You're doing the work of three people</h2>
+        <p style="margin: 1.5rem auto 0;">Every hour spent on repetitive tasks is an hour not spent growing your business.</p>
+      </div>
+      
+      <div class="problem-grid">
+        <div class="problem-card" data-delay="0">
+          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <h3>Time Drain</h3>
+          <p>20+ hours per week lost to manual data entry, scheduling, and follow-ups that could run automatically.</p>
+        </div>
+        
+        <div class="problem-card" data-delay="200">
+          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+          </svg>
+          <h3>Knowledge Bottleneck</h3>
+          <p>Your best processes live in one person's head. When they're away, everything stops.</p>
+        </div>
+        
+        <div class="problem-card" data-delay="400">
+          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/>
+          </svg>
+          <h3>Can't Scale</h3>
+          <p>You want to grow but adding customers means adding more manual work. That's not growth, that's a trap.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Calculator Section -->
+  <section class="calculator-section" id="calculator">
+    <div class="container">
+      <div class="text-center">
+        <h2>What could you do with your time back?</h2>
+        <p style="margin: 1.5rem auto 0;">See how much time you could reclaim by automating repetitive tasks.</p>
+      </div>
+      
+      <div class="calculator-container">
+        <div class="calculator-slider-container">
+          <div class="slider-label">
+            <span>Hours spent on repetitive tasks per week</span>
+            <span class="slider-value" id="slider-value">10h</span>
+          </div>
+          <input type="range" id="time-slider" min="0" max="40" value="10" step="1">
+        </div>
+        
+        <div class="calculator-results">
+          <div class="result-item">
+            <div class="result-label">Saved per week</div>
+            <div class="result-value" id="weekly-saved">7h</div>
+            <div class="result-context">Automating saves 70%</div>
+          </div>
+          
+          <div class="result-item">
+            <div class="result-label">Saved per year</div>
+            <div class="result-value" id="yearly-saved">364h</div>
+            <div class="result-context" id="yearly-context">That's 9 workweeks</div>
+          </div>
+          
+          <div class="result-item">
+            <div class="result-label">Could be doing</div>
+            <div class="result-value" id="alternative" style="font-size: 1.75rem;">Learning a new skill</div>
+            <div class="result-context">Instead of copying data</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="how-section" id="how-it-works">
+    <div class="container">
+      <div class="text-center">
+        <h2>Three steps to automation</h2>
+        <p style="margin: 1.5rem auto 0;">No technical expertise required. Just pick what bothers you and we'll handle the rest.</p>
+      </div>
+      
+      <div class="steps-container">
+        <div class="step" data-delay="0">
+          <div class="step-number">01</div>
+          <div class="step-content">
+            <h3>Pick your use case</h3>
+            <p>Choose from our library of proven automations: customer support, lead qualification, data entry, report generation, and dozens more.</p>
+          </div>
+        </div>
+        
+        <div class="step" data-delay="200">
+          <div class="step-number">02</div>
+          <div class="step-content">
+            <h3>Connect your tools</h3>
+            <p>Link your existing software in clicks. Gmail, Slack, Stripe, HubSpot, Notion—we integrate with everything you already use.</p>
+          </div>
+        </div>
+        
+        <div class="step" data-delay="400">
+          <div class="step-number">03</div>
+          <div class="step-content">
+            <h3>Watch it run</h3>
+            <p>Your automation goes live immediately. Monitor performance, tweak settings, and scale as you grow. No limits.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials-section" id="testimonials">
+    <div class="container">
+      <div class="text-center">
+        <h2>Businesses like yours are already automated</h2>
+      </div>
+      
+      <div class="testimonials-grid">
+        <div class="testimonial-card" data-delay="0">
+          <p class="testimonial-quote">"I was skeptical at first. Another AI tool, right? But this actually works. Our customer response time went from 24 hours to 2 minutes. Our customers noticed."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">MK</div>
+            <div class="author-info">
+              <div class="name">Maria Kowalski</div>
+              <div class="role">Founder, Luminary Consulting</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card" data-delay="200">
+          <p class="testimonial-quote">"We automated our entire onboarding process. New clients get personalized welcome emails, calendar invites, and document requests—automatically. I saved 15 hours per week."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">JP</div>
+            <div class="author-info">
+              <div class="name">James Park</div>
+              <div class="role">CEO, Park Legal Services</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card" data-delay="400">
+          <p class="testimonial-quote">"The cost savings were real. We automated invoice processing, expense tracking, and financial reporting. Our accountant now works on strategy, not data entry."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">SC</div>
+            <div class="author-info">
+              <div class="name">Sarah Chen</div>
+              <div class="role">Owner, Chen Retail Group</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial-card" data-delay="600">
+          <p class="testimonial-quote">"I run a small bakery. I don't have a tech team. But I set up customer email automation in 20 minutes. Now I respond to inquiries while I'm baking. It's magic."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">SB</div>
+            <div class="author-info">
+              <div class="name">Sarah Bennett</div>
+              <div class="role">Founder, Sweet Rise Bakery</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section" id="features">
+    <div class="container">
+      <div class="text-center">
+        <h2>Everything you need, nothing you don't</h2>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-row" data-delay="0">
+          <div>
+            <h3>Pre-built automations</h3>
+            <p>Deploy tested workflows in minutes, not months. No custom development required.</p>
+          </div>
+          <span class="feature-status">50+ templates</span>
+        </div>
+        
+        <div class="feature-row" data-delay="100">
+          <div>
+            <h3>Enterprise security</h3>
+            <p>SOC 2 Type II certified. Your data is encrypted, isolated, and never used to train models.</p>
+          </div>
+          <span class="feature-status">SOC 2 compliant</span>
+        </div>
+        
+        <div class="feature-row" data-delay="200">
+          <div>
+            <h3>Unlimited scaling</h3>
+            <p>From 10 tasks to 10 million. Our infrastructure scales automatically without intervention.</p>
+          </div>
+          <span class="feature-status">Auto-scaling</span>
+        </div>
+        
+        <div class="feature-row" data-delay="300">
+          <div>
+            <h3>Real-time monitoring</h3>
+            <p>Watch your automations run. See what's working, what's not, and optimize in seconds.</p>
+          </div>
+          <span class="feature-status">Live dashboards</span>
+        </div>
+        
+        <div class="feature-row" data-delay="400">
+          <div>
+            <h3>Integrates with everything</h3>
+            <p>Gmail, Slack, Stripe, HubSpot, Salesforce, Notion, and 200+ other tools you already use.</p>
+          </div>
+          <span class="feature-status">200+ integrations</span>
+        </div>
+        
+        <div class="feature-row" data-delay="500">
+          <div>
+            <h3>Human support when you need it</h3>
+            <p>Not a chatbot that loops. Real humans who understand your business and help you succeed.</p>
+          </div>
+          <span class="feature-status">24/7 support</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA Section -->
+  <section class="cta-section" id="demo">
+    <div class="container cta-content">
+      <h2>Ready to reclaim your time?</h2>
+      <p style="margin: 1.5rem auto 0;">Join hundreds of small businesses already running on Engine AI. Start automating today—no credit card required.</p>
+      
+      <div class="cta-buttons">
+        <a href="#" class="btn btn-primary">Start Automating Free</a>
+        <a href="#" class="btn btn-secondary">Schedule Demo</a>
+      </div>
+      
+      <p class="urgency-note">Free tier includes 10K automations/month • Cancel anytime • No credit card required</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-content">
+      <div>
+        <a href="#" class="logo">Engine AI</a>
+      </div>
+      
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Security</a>
+        <a href="#">Contact</a>
+      </div>
+      
+      <p class="footer-copyright">© 2026 Engine AI. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Bubbling Water Animation (Preserved from original)
+    (function() {
+      const canvas = document.getElementById('bubbling-canvas');
+      if (!canvas) return;
+      
+      const ctx = canvas.getContext('2d');
+      let animationFrameId;
+
+      const resizeCanvas = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      };
+
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      const bubbles = [];
+      const numColumns = 12;
+
+      const createBubbles = () => {
+        const columnWidth = canvas.width / numColumns;
+        for (let col = 0; col < numColumns; col++) {
+          const isCentral = col >= 4 && col <= 7;
+          const bubbleCount = isCentral ? 40 : 20;
+          
+          for (let i = 0; i < bubbleCount; i++) {
+            const xBase = col * columnWidth + columnWidth / 2;
+            const xSpread = isCentral ? 40 : 60;
+            
+            bubbles.push({
+              x: xBase + (Math.random() - 0.5) * xSpread,
+              y: canvas.height + Math.random() * 200,
+              radius: Math.random() * 3 + 1,
+              speed: Math.random() * 1.5 + 0.5,
+              opacity: Math.random() * 0.6 + 0.2,
+              column: col,
+            });
+          }
+        }
+      };
+
+      createBubbles();
+
+      const animate = () => {
+        ctx.fillStyle = 'rgba(10, 10, 15, 1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const gradient = ctx.createRadialGradient(
+          canvas.width / 2,
+          canvas.height * 0.6,
+          0,
+          canvas.width / 2,
+          canvas.height * 0.6,
+          canvas.width * 0.6
+        );
+        gradient.addColorStop(0, 'rgba(0, 200, 220, 0.15)');
+        gradient.addColorStop(0.5, 'rgba(0, 150, 180, 0.08)');
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        bubbles.forEach((bubble) => {
+          bubble.y -= bubble.speed;
+          bubble.x += Math.sin(bubble.y * 0.01) * 0.3;
+
+          if (bubble.y < -10) {
+            bubble.y = canvas.height + Math.random() * 100;
+            const columnWidth = canvas.width / numColumns;
+            const xBase = bubble.column * columnWidth + columnWidth / 2;
+            const isCentral = bubble.column >= 4 && bubble.column <= 7;
+            const xSpread = isCentral ? 40 : 60;
+            bubble.x = xBase + (Math.random() - 0.5) * xSpread;
+          }
+
+          const alpha = bubble.opacity * (1 - (bubble.y / canvas.height) * 0.3);
+          
+          const glowGradient = ctx.createRadialGradient(
+            bubble.x, bubble.y, 0,
+            bubble.x, bubble.y, bubble.radius * 4
+          );
+          glowGradient.addColorStop(0, `rgba(0, 220, 255, ${alpha * 0.5})`);
+          glowGradient.addColorStop(1, 'rgba(0, 220, 255, 0)');
+          
+          ctx.fillStyle = glowGradient;
+          ctx.beginPath();
+          ctx.arc(bubble.x, bubble.y, bubble.radius * 4, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = `rgba(150, 230, 255, ${alpha})`;
+          ctx.beginPath();
+          ctx.arc(bubble.x, bubble.y, bubble.radius, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.8})`;
+          ctx.beginPath();
+          ctx.arc(bubble.x - bubble.radius * 0.3, bubble.y - bubble.radius * 0.3, bubble.radius * 0.3, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        animationFrameId = requestAnimationFrame(animate);
+      };
+
+      animate();
+    })();
+
+    // Calculator Logic
+    (function() {
+      const slider = document.getElementById('time-slider');
+      const sliderValue = document.getElementById('slider-value');
+      const weeklySaved = document.getElementById('weekly-saved');
+      const yearlySaved = document.getElementById('yearly-saved');
+      const yearlyContext = document.getElementById('yearly-context');
+      const alternative = document.getElementById('alternative');
+
+      const alternatives = [
+        { hours: 0, text: 'Enjoying your weekend' },
+        { hours: 50, text: 'Learning a new skill' },
+        { hours: 100, text: 'Taking a real vacation' },
+        { hours: 200, text: 'Spending time with family' },
+        { hours: 300, text: 'Building a new product' },
+        { hours: 400, text: 'Hiring that extra help' },
+        { hours: 500, text: 'Scaling your business' },
+        { hours: 600, text: 'Changing your industry' },
+      ];
+
+      const updateCalculator = (value) => {
+        const hours = parseInt(value);
+        sliderValue.textContent = hours + 'h';
+        
+        const weekly = Math.round(hours * 0.7);
+        weeklySaved.textContent = weekly + 'h';
+        
+        const yearly = weekly * 52;
+        yearlySaved.textContent = yearly + 'h';
+        
+        // Calculate work weeks (40 hours per week)
+        const workWeeks = Math.round(yearly / 40);
+        if (workWeeks >= 1) {
+          yearlyContext.textContent = `That's ${workWeeks} ${workWeeks === 1 ? 'workweek' : 'workweeks'}`;
+        } else {
+          yearlyContext.textContent = `That's ${yearly} extra hours per year`;
+        }
+        
+        // Find appropriate alternative
+        let alt = alternatives[0];
+        for (const a of alternatives) {
+          if (yearly >= a.hours) alt = a;
+        }
+        alternative.textContent = alt.text;
+      };
+
+      slider.addEventListener('input', (e) => {
+        updateCalculator(e.target.value);
+      });
+
+      // Initialize
+      updateCalculator(slider.value);
+    })();
+
+    // Scroll Animations
+    (function() {
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const delay = entry.target.dataset.delay || 0;
+            setTimeout(() => {
+              entry.target.classList.add('visible');
+            }, delay);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      // Observe elements
+      document.querySelectorAll('.problem-card, .step, .testimonial-card, .feature-row').forEach(el => {
+        observer.observe(el);
+      });
+    })();
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
