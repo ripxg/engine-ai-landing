@@ -3,97 +3,129 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Engine AI - Automate What Drains You</title>
+  <title>Engine AI — Your Business, On Autopilot</title>
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@400;500;600;700&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@400;500;600;700&family=Source+Serif+Pro:wght@400;600&display=swap" rel="stylesheet">
   
   <style>
-    /* CSS Custom Properties */
+    /* ============================================
+       CSS CUSTOM PROPERTIES & RESET
+       ============================================ */
     :root {
-      --color-bg: #0a0a0f;
-      --color-bg-elevated: #0f0f18;
-      --color-text-primary: #ffffff;
-      --color-text-secondary: #a0a0a0;
-      --color-text-muted: #6a6a75;
-      --color-accent: #00f0ff;
-      --color-accent-dark: #00c0cc;
-      --color-border: #1a1a24;
-      --font-display: 'Playfair Display', Georgia, serif;
-      --font-body: 'Source Serif Pro', Georgia, serif;
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #0e0e16;
+      --bg-tertiary: #12121a;
+      --text-headline: #ffffff;
+      --text-body: #a0a0a0;
+      --text-muted: #6a6a7a;
+      --accent: #00ffaa;
+      --accent-dim: rgba(0, 255, 170, 0.1);
+      --border: rgba(255, 255, 255, 0.08);
+      --bubble-1: rgba(0, 255, 170, 0.03);
+      --bubble-2: rgba(0, 200, 170, 0.04);
+      --bubble-3: rgba(0, 170, 150, 0.02);
+      
+      --font-display: 'Playfair Display', serif;
+      --font-body: 'Source Serif Pro', serif;
       --font-mono: 'JetBrains Mono', monospace;
-      --easing: cubic-bezier(0.16, 1, 0.3, 1);
+      
+      --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-
-    /* Reset & Base */
+    
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-
+    
     html {
       scroll-behavior: smooth;
-      font-size: 16px;
     }
-
+    
     body {
       font-family: var(--font-body);
-      background: var(--color-bg);
-      color: var(--color-text-primary);
-      line-height: 1.6;
+      background: var(--bg-primary);
+      color: var(--text-body);
+      line-height: 1.7;
+      font-size: 16px;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
     }
-
-    /* Typography */
+    
+    /* ============================================
+       WATER BUBBLE BACKGROUND (CANVAS)
+       ============================================ */
+    #bubble-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+    
+    /* ============================================
+       TYPOGRAPHY
+       ============================================ */
     h1, h2, h3, h4, h5, h6 {
       font-family: var(--font-display);
+      color: var(--text-headline);
       font-weight: 500;
       line-height: 1.2;
       letter-spacing: -0.02em;
     }
-
+    
     h1 {
-      font-size: clamp(2.5rem, 8vw, 6rem);
+      font-size: clamp(2.5rem, 8vw, 5rem);
       font-weight: 600;
     }
-
+    
     h2 {
       font-size: clamp(2rem, 5vw, 3.5rem);
+      margin-bottom: 1.5rem;
     }
-
+    
     h3 {
       font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+      margin-bottom: 1rem;
     }
-
+    
     p {
-      font-size: clamp(1rem, 1.25vw, 1.125rem);
-      color: var(--color-text-secondary);
+      margin-bottom: 1.5rem;
       max-width: 65ch;
     }
-
-    /* Utility Classes */
+    
+    .mono {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    
+    /* ============================================
+       LAYOUT UTILITIES
+       ============================================ */
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 0 clamp(1.5rem, 5vw, 4rem);
+      padding: 0 2rem;
     }
-
-    .text-center { text-align: center; }
-    .flex { display: flex; }
-    .flex-col { flex-direction: column; }
-    .items-center { align-items: center; }
-    .justify-center { justify-content: center; }
-    .justify-between { justify-content: space-between; }
-    .gap-4 { gap: 1rem; }
-    .gap-8 { gap: 2rem; }
-    .gap-12 { gap: 3rem; }
-
-    /* Animations */
+    
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 0;
+    }
+    
+    /* ============================================
+       ANIMATIONS
+       ============================================ */
     @keyframes fadeInUp {
       from {
         opacity: 0;
@@ -104,56 +136,47 @@
         transform: translateY(0);
       }
     }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
-
-    @keyframes slideInLeft {
-      from {
-        opacity: 0;
-        transform: translateX(-60px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
+    
+    @keyframes ripple {
+      0% { transform: scale(1); opacity: 0.4; }
+      100% { transform: scale(2); opacity: 0; }
     }
-
-    @keyframes countUp {
-      from { opacity: 0; transform: scale(0.8); }
-      to { opacity: 1; transform: scale(1); }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
-
-    .animate-in {
+    
+    .fade-in-up {
       opacity: 0;
-      animation: fadeInUp 0.8s var(--easing) forwards;
+      animation: fadeInUp 0.8s var(--ease-out) forwards;
     }
-
+    
     .delay-100 { animation-delay: 0.1s; }
     .delay-200 { animation-delay: 0.2s; }
+    .delay-300 { animation-delay: 0.3s; }
     .delay-400 { animation-delay: 0.4s; }
-    .delay-600 { animation-delay: 0.6s; }
-    .delay-800 { animation-delay: 0.8s; }
-
-    .visible {
-      opacity: 1 !important;
-      transform: translateY(0) !important;
+    .delay-500 { animation-delay: 0.5s; }
+    
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
     }
-
-    /* Canvas Background */
-    #bubbling-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      pointer-events: none;
+    
+    .scroll-reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
-
-    /* Navigation */
+    
+    /* ============================================
+       NAVIGATION
+       ============================================ */
     nav {
       position: fixed;
       top: 0;
@@ -161,1111 +184,1651 @@
       right: 0;
       z-index: 100;
       padding: 1.5rem 0;
-      background: linear-gradient(to bottom, var(--color-bg) 0%, transparent 100%);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      transition: background 0.3s ease, padding 0.3s ease;
     }
-
-    nav .container {
+    
+    nav.scrolled {
+      background: rgba(10, 10, 15, 0.9);
+      backdrop-filter: blur(20px);
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .nav-inner {
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
     }
-
+    
     .logo {
       font-family: var(--font-display);
       font-size: 1.5rem;
       font-weight: 600;
-      color: var(--color-text-primary);
+      color: var(--text-headline);
       text-decoration: none;
-      letter-spacing: -0.02em;
     }
-
+    
+    .logo span {
+      color: var(--accent);
+    }
+    
     .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    
+    .nav-links a {
+      color: var(--text-body);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+    
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: width 0.3s var(--ease-out);
+    }
+    
+    .nav-links a:hover {
+      color: var(--text-headline);
+    }
+    
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+    
+    .nav-cta {
       display: none;
     }
-
+    
     @media (min-width: 768px) {
-      .nav-links {
-        display: flex;
-        gap: 2rem;
-        align-items: center;
+      .nav-cta {
+        display: block;
       }
     }
-
-    .nav-links a {
-      color: var(--color-text-secondary);
+    
+    /* ============================================
+       BUTTONS
+       ============================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 500;
       text-decoration: none;
-      font-size: 0.9375rem;
-      transition: color 0.3s var(--easing);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s var(--ease-out);
+      position: relative;
+      overflow: hidden;
     }
-
-    .nav-links a:hover {
-      color: var(--color-text-primary);
+    
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg-primary);
     }
-
-    /* Hero Section */
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 40px rgba(0, 255, 170, 0.3);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-headline);
+      border: 1px solid var(--border);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--bg-tertiary);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    
+    .btn-text {
+      background: none;
+      color: var(--text-body);
+      padding: 0;
+      font-size: 0.9rem;
+      font-family: var(--font-body);
+      text-transform: none;
+      letter-spacing: 0;
+    }
+    
+    .btn-text:hover {
+      color: var(--text-headline);
+    }
+    
+    /* ============================================
+       HERO SECTION
+       ============================================ */
     .hero {
       min-height: 100vh;
       display: flex;
       align-items: center;
       padding-top: 80px;
       position: relative;
+      overflow: hidden;
     }
-
+    
     .hero-content {
-      max-width: 900px;
-      margin: 0 auto;
-      text-align: center;
+      max-width: 800px;
+      position: relative;
+      z-index: 2;
     }
-
+    
     .hero-badge {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
       padding: 0.5rem 1rem;
-      background: rgba(0, 240, 255, 0.05);
-      border: 1px solid rgba(0, 240, 255, 0.2);
+      background: var(--accent-dim);
+      border: 1px solid rgba(0, 255, 170, 0.2);
       border-radius: 100px;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--color-accent);
       margin-bottom: 2rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
     }
-
-    .hero-badge::before {
-      content: '';
+    
+    .hero-badge span {
       width: 6px;
       height: 6px;
-      background: var(--color-accent);
+      background: var(--accent);
       border-radius: 50%;
       animation: pulse 2s infinite;
     }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
-
+    
     .hero h1 {
       margin-bottom: 1.5rem;
-      color: var(--color-text-primary);
     }
-
-    .hero-subtitle {
+    
+    .hero p {
       font-size: 1.25rem;
-      color: var(--color-text-secondary);
-      margin-bottom: 2rem;
-      line-height: 1.7;
+      color: var(--text-body);
+      margin-bottom: 2.5rem;
     }
-
-    .hero-story {
-      font-style: italic;
-      color: var(--color-text-muted);
-      margin-bottom: 3rem;
-      padding: 2rem;
-      border-left: 2px solid var(--color-accent);
-      text-align: left;
-      background: rgba(0, 240, 255, 0.02);
-      border-radius: 0 8px 8px 0;
-    }
-
-    /* Buttons */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      padding: 1rem 2rem;
-      font-family: var(--font-body);
-      font-size: 1rem;
-      font-weight: 600;
-      text-decoration: none;
-      border-radius: 8px;
-      transition: all 0.3s var(--easing);
-      cursor: pointer;
-      border: none;
-    }
-
-    .btn-primary {
-      background: var(--color-accent);
-      color: var(--color-bg);
-      box-shadow: 0 4px 20px rgba(0, 240, 255, 0.3);
-    }
-
-    .btn-primary:hover {
-      background: var(--color-accent-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(0, 240, 255, 0.4);
-    }
-
-    .btn-secondary {
-      background: transparent;
-      color: var(--color-text-primary);
-      border: 1px solid var(--color-border);
-    }
-
-    .btn-secondary:hover {
-      border-color: var(--color-accent);
-      color: var(--color-accent);
-    }
-
-    /* Problem Section */
-    .problem-section {
-      padding: 8rem 0;
-      background: var(--color-bg);
-    }
-
-    .problem-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 3rem;
-      margin-top: 4rem;
-    }
-
-    @media (min-width: 768px) {
-      .problem-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    .problem-card {
-      padding: 2rem;
-      border: 1px solid var(--color-border);
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.01);
-      transition: all 0.4s var(--easing);
-      opacity: 0;
-      transform: translateY(30px);
-    }
-
-    .problem-card.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .problem-card:hover {
-      border-color: rgba(0, 240, 255, 0.3);
-      transform: translateY(-8px);
-      background: rgba(0, 240, 255, 0.02);
-    }
-
-    .problem-card .icon {
-      width: 48px;
-      height: 48px;
-      margin-bottom: 1.5rem;
-      color: var(--color-text-muted);
-      transition: color 0.3s var(--easing);
-    }
-
-    .problem-card:hover .icon {
-      color: var(--color-accent);
-    }
-
-    .problem-card h3 {
-      margin-bottom: 1rem;
-      color: var(--color-text-primary);
-    }
-
-    /* Calculator Section */
-    .calculator-section {
-      padding: 8rem 0;
-      background: linear-gradient(to bottom, var(--color-bg) 0%, var(--color-bg-elevated) 100%);
-    }
-
-    .calculator-container {
-      max-width: 800px;
-      margin: 4rem auto 0;
-      padding: 3rem;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--color-border);
-      border-radius: 16px;
-    }
-
-    .calculator-slider-container {
-      margin: 3rem 0;
-    }
-
-    .slider-label {
+    
+    .hero-actions {
       display: flex;
-      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+    
+    .hero-trust {
+      display: flex;
       align-items: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .slider-label span {
-      font-family: var(--font-mono);
-      font-size: 0.875rem;
-      color: var(--color-text-muted);
-    }
-
-    .slider-value {
-      font-family: var(--font-mono);
-      font-size: 2rem;
-      font-weight: 500;
-      color: var(--color-accent);
-    }
-
-    input[type="range"] {
-      width: 100%;
-      height: 6px;
-      border-radius: 3px;
-      background: var(--color-border);
-      outline: none;
-      -webkit-appearance: none;
-      appearance: none;
-      cursor: pointer;
-    }
-
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: var(--color-accent);
-      cursor: pointer;
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
-      transition: transform 0.2s var(--easing);
-    }
-
-    input[type="range"]::-webkit-slider-thumb:hover {
-      transform: scale(1.2);
-    }
-
-    input[type="range"]::-moz-range-thumb {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: var(--color-accent);
-      cursor: pointer;
-      border: none;
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
-    }
-
-    .calculator-results {
-      display: grid;
-      grid-template-columns: 1fr;
       gap: 2rem;
-      margin-top: 3rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--color-border);
+      font-size: 0.85rem;
+      color: var(--text-muted);
     }
-
-    @media (min-width: 640px) {
-      .calculator-results {
-        grid-template-columns: repeat(3, 1fr);
+    
+    .hero-trust-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .hero-trust-item svg {
+      width: 16px;
+      height: 16px;
+      color: var(--accent);
+    }
+    
+    /* Interactive Demo Preview */
+    .demo-preview {
+      position: absolute;
+      right: -5%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 500px;
+      height: 400px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      opacity: 0;
+      animation: fadeInUp 1s var(--ease-out) 0.5s forwards;
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+    }
+    
+    @media (max-width: 1024px) {
+      .demo-preview {
+        display: none;
       }
     }
-
-    .result-item {
-      text-align: center;
+    
+    .demo-preview-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
     }
-
-    .result-label {
-      font-size: 0.875rem;
-      color: var(--color-text-muted);
-      margin-bottom: 0.5rem;
+    
+    .demo-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+    
+    .demo-dot.active {
+      background: var(--accent);
+    }
+    
+    .demo-preview-content {
       font-family: var(--font-mono);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      font-size: 0.75rem;
+      color: var(--text-muted);
     }
-
-    .result-value {
-      font-family: var(--font-display);
-      font-size: 2.5rem;
-      font-weight: 600;
-      color: var(--color-text-primary);
+    
+    .demo-line {
       margin-bottom: 0.5rem;
+      opacity: 0;
+      animation: fadeInUp 0.5s var(--ease-out) forwards;
     }
-
-    .result-context {
-      font-size: 0.875rem;
-      color: var(--color-text-muted);
-      font-style: italic;
+    
+    .demo-line:nth-child(1) { animation-delay: 1.5s; }
+    .demo-line:nth-child(2) { animation-delay: 1.7s; }
+    .demo-line:nth-child(3) { animation-delay: 1.9s; }
+    .demo-line:nth-child(4) { animation-delay: 2.1s; }
+    .demo-line:nth-child(5) { animation-delay: 2.3s; }
+    
+    .demo-line span {
+      color: var(--accent);
     }
-
-    /* How It Works */
-    .how-section {
-      padding: 8rem 0;
-      background: var(--color-bg-elevated);
+    
+    /* ============================================
+       PROBLEM / SOLUTION SECTION
+       ============================================ */
+    .problem-solution {
+      background: var(--bg-secondary);
     }
-
-    .steps-container {
+    
+    .story-grid {
       display: grid;
-      grid-template-columns: 1fr;
       gap: 4rem;
       margin-top: 4rem;
     }
-
+    
     @media (min-width: 768px) {
-      .steps-container {
-        grid-template-columns: repeat(3, 1fr);
+      .story-grid {
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
       }
     }
-
-    .step {
+    
+    .story-visual {
       position: relative;
-      opacity: 0;
-      transform: translateY(30px);
-      transition: all 0.6s var(--easing);
+      aspect-ratio: 1;
+      max-width: 400px;
+      margin: 0 auto;
     }
-
-    .step.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .step-number {
-      font-family: var(--font-mono);
-      font-size: 4rem;
-      font-weight: 500;
-      color: rgba(0, 240, 255, 0.15);
+    
+    .story-bubbles {
       position: absolute;
-      top: -2rem;
-      left: -1rem;
-      line-height: 1;
+      inset: 0;
     }
-
-    .step-content {
-      position: relative;
-      z-index: 1;
+    
+    .story-bubble {
+      position: absolute;
+      border-radius: 50%;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      transition: all 0.5s var(--ease-out);
     }
-
-    .step h3 {
+    
+    .story-bubble.chaos {
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    .story-bubble.organized {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+    
+    .story-bubble:nth-child(1) {
+      width: 80px;
+      height: 80px;
+      top: 10%;
+      left: 20%;
+    }
+    
+    .story-bubble:nth-child(2) {
+      width: 60px;
+      height: 60px;
+      top: 50%;
+      left: 10%;
+      animation-delay: 0.5s;
+    }
+    
+    .story-bubble:nth-child(3) {
+      width: 70px;
+      height: 70px;
+      top: 30%;
+      right: 20%;
+      animation-delay: 1s;
+    }
+    
+    .story-bubble:nth-child(4) {
+      width: 50px;
+      height: 50px;
+      bottom: 20%;
+      right: 30%;
+      animation-delay: 1.5s;
+    }
+    
+    .story-bubble:nth-child(5) {
+      width: 90px;
+      height: 90px;
+      bottom: 10%;
+      left: 30%;
+      animation-delay: 2s;
+    }
+    
+    .story-content h2 {
       margin-bottom: 1rem;
-      color: var(--color-text-primary);
     }
-
-    /* Testimonials */
-    .testimonials-section {
-      padding: 8rem 0;
-      background: var(--color-bg);
+    
+    .story-content .subtitle {
+      font-family: var(--font-mono);
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      display: block;
     }
-
-    .testimonials-grid {
+    
+    /* ============================================
+       PRODUCT SHOWCASE
+       ============================================ */
+    .showcase-grid {
       display: grid;
-      grid-template-columns: 1fr;
       gap: 2rem;
       margin-top: 4rem;
     }
-
+    
     @media (min-width: 768px) {
-      .testimonials-grid {
+      .showcase-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    .showcase-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.4s var(--ease-out);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .showcase-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    
+    .showcase-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(0, 255, 170, 0.2);
+    }
+    
+    .showcase-card:hover::before {
+      opacity: 1;
+    }
+    
+    .showcase-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--accent-dim);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+    }
+    
+    .showcase-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+    
+    .showcase-card p {
+      font-size: 0.95rem;
+      margin-bottom: 0;
+    }
+    
+    /* ============================================
+       SOCIAL PROOF
+       ============================================ */
+    .social-proof {
+      background: var(--bg-secondary);
+    }
+    
+    .metrics-grid {
+      display: grid;
+      gap: 2rem;
+      margin: 4rem 0;
+    }
+    
+    @media (min-width: 768px) {
+      .metrics-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    .metric-item {
+      text-align: center;
+      padding: 2rem;
+      background: var(--bg-tertiary);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    
+    .metric-value {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 6vw, 3.5rem);
+      font-weight: 600;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    
+    .metric-label {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    
+    .testimonials {
+      display: grid;
+      gap: 2rem;
+      margin-top: 4rem;
+    }
+    
+    @media (min-width: 768px) {
+      .testimonials {
         grid-template-columns: repeat(2, 1fr);
       }
     }
-
-    .testimonial-card {
+    
+    .testimonial {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
       padding: 2rem;
-      background: rgba(255, 255, 255, 0.01);
-      border: 1px solid var(--color-border);
-      border-radius: 12px;
-      transition: all 0.4s var(--easing);
-      opacity: 0;
-      transform: translateY(30px);
+      transition: transform 0.3s var(--ease-out);
     }
-
-    .testimonial-card.visible {
-      opacity: 1;
-      transform: translateY(0);
+    
+    .testimonial:hover {
+      transform: scale(1.02);
     }
-
-    .testimonial-card:hover {
-      border-color: rgba(0, 240, 255, 0.2);
-      background: rgba(0, 240, 255, 0.01);
-    }
-
-    .testimonial-quote {
-      font-size: 1.125rem;
-      color: var(--color-text-primary);
-      margin-bottom: 1.5rem;
-      line-height: 1.7;
+    
+    .testimonial-content {
+      font-size: 1.1rem;
       font-style: italic;
+      margin-bottom: 1.5rem;
+      color: var(--text-body);
     }
-
+    
     .testimonial-author {
       display: flex;
       align-items: center;
       gap: 1rem;
     }
-
-    .author-avatar {
+    
+    .testimonial-avatar {
       width: 48px;
       height: 48px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+      background: var(--accent-dim);
       display: flex;
       align-items: center;
       justify-content: center;
+      font-family: var(--font-mono);
+      font-weight: 500;
+      color: var(--accent);
+    }
+    
+    .testimonial-info h4 {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-headline);
+      margin-bottom: 0.25rem;
+    }
+    
+    .testimonial-info span {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+    
+    .customer-logos {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 4rem;
+      opacity: 0.6;
+    }
+    
+    .customer-logo {
       font-family: var(--font-display);
       font-size: 1.25rem;
-      color: var(--color-bg);
+      color: var(--text-muted);
+      transition: color 0.3s ease;
     }
-
-    .author-info .name {
-      font-weight: 600;
-      color: var(--color-text-primary);
+    
+    .customer-logo:hover {
+      color: var(--text-headline);
     }
-
-    .author-info .role {
-      font-size: 0.875rem;
-      color: var(--color-text-muted);
+    
+    /* ============================================
+       TECHNICAL DIFFERENTIATORS
+       ============================================ */
+    .comparison-table {
+      margin-top: 4rem;
+      overflow-x: auto;
     }
-
-    /* Features Grid */
-    .features-section {
-      padding: 8rem 0;
-      background: var(--color-bg-elevated);
+    
+    .comparison-table table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
     }
-
-    .features-grid {
+    
+    .comparison-table th,
+    .comparison-table td {
+      padding: 1.5rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .comparison-table th {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .comparison-table td {
+      font-size: 1rem;
+    }
+    
+    .comparison-table .highlight {
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-weight: 500;
+    }
+    
+    .integration-grid {
       display: grid;
-      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-top: 4rem;
+    }
+    
+    @media (min-width: 768px) {
+      .integration-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    .integration-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .integration-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    
+    .integration-icon {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+    
+    .security-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
       gap: 2rem;
       margin-top: 4rem;
     }
-
-    @media (min-width: 768px) {
-      .features-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    .feature-row {
+    
+    .security-badge {
       display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-      padding: 2rem;
-      border: 1px solid var(--color-border);
-      border-radius: 12px;
-      transition: all 0.4s var(--easing);
-      opacity: 0;
-      transform: translateX(-30px);
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
     }
-
-    .feature-row.visible {
-      opacity: 1;
-      transform: translateX(0);
+    
+    .security-badge svg {
+      width: 16px;
+      height: 16px;
+      color: var(--accent);
     }
-
-    .feature-row:hover {
-      border-color: rgba(0, 240, 255, 0.2);
+    
+    /* ============================================
+       CONVERSION SECTION
+       ============================================ */
+    .conversion {
+      background: var(--bg-secondary);
+      text-align: center;
     }
-
-    @media (min-width: 768px) {
-      .feature-row {
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-      }
+    
+    .conversion-content {
+      max-width: 600px;
+      margin: 0 auto;
     }
-
-    .feature-row h3 {
-      color: var(--color-text-primary);
-      margin-bottom: 0.5rem;
-    }
-
-    .feature-row p {
-      font-size: 0.9375rem;
-      margin: 0;
-    }
-
-    .feature-status {
+    
+    .urgency-banner {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      background: rgba(0, 240, 255, 0.1);
+      padding: 0.5rem 1.5rem;
+      background: rgba(255, 100, 100, 0.1);
+      border: 1px solid rgba(255, 100, 100, 0.3);
       border-radius: 100px;
+      margin-bottom: 2rem;
       font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: var(--color-accent);
-      white-space: nowrap;
+      font-size: 0.8rem;
+      color: #ff6464;
     }
-
-    /* Final CTA */
-    .cta-section {
-      padding: 10rem 0;
-      background: var(--color-bg);
-      text-align: center;
+    
+    .urgency-banner span {
+      animation: pulse 2s infinite;
     }
-
-    .cta-content {
-      max-width: 700px;
-      margin: 0 auto;
+    
+    .conversion-form {
+      max-width: 450px;
+      margin: 2rem auto 0;
     }
-
-    .cta-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin-top: 3rem;
+    
+    .form-group {
+      margin-bottom: 1rem;
     }
-
-    @media (min-width: 640px) {
-      .cta-buttons {
-        flex-direction: row;
-        justify-content: center;
-      }
+    
+    .form-group input {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-headline);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
     }
-
-    .urgency-note {
-      margin-top: 2rem;
-      font-family: var(--font-mono);
-      font-size: 0.875rem;
-      color: var(--color-text-muted);
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--accent);
     }
-
-    /* Footer */
-    footer {
-      padding: 4rem 0;
-      border-top: 1px solid var(--color-border);
-      background: var(--color-bg);
+    
+    .form-group input::placeholder {
+      color: var(--text-muted);
     }
-
-    .footer-content {
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
-      align-items: center;
+    
+    .alternative-action {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--text-muted);
     }
-
-    @media (min-width: 768px) {
-      .footer-content {
-        flex-direction: row;
-        justify-content: space-between;
-      }
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 2rem;
-    }
-
-    .footer-links a {
-      color: var(--color-text-muted);
+    
+    .alternative-action a {
+      color: var(--accent);
       text-decoration: none;
-      font-size: 0.875rem;
-      transition: color 0.3s var(--easing);
+      transition: color 0.3s ease;
     }
-
-    .footer-links a:hover {
-      color: var(--color-text-primary);
+    
+    .alternative-action a:hover {
+      color: var(--text-headline);
     }
-
-    .footer-copyright {
+    
+    /* ============================================
+       FOOTER
+       ============================================ */
+    footer {
+      background: var(--bg-secondary);
+      padding: 4rem 0 2rem;
+      border-top: 1px solid var(--border);
+    }
+    
+    .footer-grid {
+      display: grid;
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+    
+    @media (min-width: 768px) {
+      .footer-grid {
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+      }
+    }
+    
+    .footer-brand h4 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .footer-brand p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    
+    .footer-links h5 {
       font-family: var(--font-mono);
       font-size: 0.75rem;
-      color: var(--color-text-muted);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
     }
-
-    /* Responsive */
-    @media (max-width: 767px) {
+    
+    .footer-links ul {
+      list-style: none;
+    }
+    
+    .footer-links li {
+      margin-bottom: 0.5rem;
+    }
+    
+    .footer-links a {
+      color: var(--text-body);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.3s ease;
+    }
+    
+    .footer-links a:hover {
+      color: var(--text-headline);
+    }
+    
+    .newsletter-form {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    
+    .newsletter-form input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-headline);
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+    }
+    
+    .newsletter-form button {
+      padding: 0.75rem 1.25rem;
+      background: var(--accent);
+      border: none;
+      border-radius: 6px;
+      color: var(--bg-primary);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .newsletter-form button:hover {
+      transform: translateY(-1px);
+    }
+    
+    .footer-bottom {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      gap: 1rem;
+    }
+    
+    .footer-bottom p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+    
+    .social-links {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .social-links a {
+      color: var(--text-muted);
+      transition: color 0.3s ease;
+    }
+    
+    .social-links a:hover {
+      color: var(--text-headline);
+    }
+    
+    /* ============================================
+       MAGNETIC CURSOR EFFECT
+       ============================================ */
+    .magnetic {
+      transition: transform 0.3s var(--ease-spring);
+    }
+    
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      
+      section {
+        padding: 4rem 0;
+      }
+      
       .hero h1 {
         font-size: 2.5rem;
       }
       
-      .calculator-container {
-        padding: 1.5rem;
+      .hero p {
+        font-size: 1.1rem;
       }
       
-      .result-value {
-        font-size: 2rem;
+      .hero-actions {
+        flex-direction: column;
+      }
+      
+      .hero-actions .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .story-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .showcase-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .testimonials {
+        grid-template-columns: 1fr;
+      }
+      
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .newsletter-form {
+        flex-direction: column;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Canvas Background -->
-  <canvas id="bubbling-canvas"></canvas>
-
+  <!-- Water Bubble Canvas Background -->
+  <canvas id="bubble-canvas"></canvas>
+  
   <!-- Navigation -->
-  <nav>
-    <div class="container">
-      <a href="#" class="logo">Engine AI</a>
-      <div class="nav-links">
-        <a href="#how-it-works">How It Works</a>
-        <a href="#features">Features</a>
-        <a href="#testimonials">Stories</a>
-        <a href="#" class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.875rem;">Start Free</a>
-      </div>
+  <nav id="navbar">
+    <div class="container nav-inner">
+      <a href="#" class="logo">Engine<span>AI</span></a>
+      <ul class="nav-links">
+        <li><a href="#problem">Why EngineAI</a></li>
+        <li><a href="#showcase">Features</a></li>
+        <li><a href="#proof">Customers</a></li>
+        <li><a href="#technical">Security</a></li>
+      </ul>
+      <a href="#start" class="btn btn-primary nav-cta magnetic">Get Started Free</a>
     </div>
   </nav>
-
+  
   <!-- Hero Section -->
   <section class="hero">
-    <div class="container hero-content">
-      <div class="hero-badge animate-in">Now in Beta</div>
-      
-      <h1 class="animate-in delay-100">
-        That spreadsheet isn't running your business.<br>
-        <span style="color: var(--color-text-secondary);">You are.</span>
-      </h1>
-      
-      <p class="hero-subtitle animate-in delay-200">
-        And you're exhausted. The manual work, the late nights, the repetitive tasks that drain your energy.
-      </p>
-      
-      <div class="hero-story animate-in delay-400">
-        <strong>Meet Sarah.</strong> She runs a bakery. At 2 AM she's still responding to customer emails, updating inventory, and reconciling orders. Tomorrow she'll have an AI that handles all three while she sleeps.
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge fade-in-up">
+          <span></span>
+          <span class="mono">Trusted by 2,400+ businesses</span>
+        </div>
+        
+        <h1 class="fade-in-up delay-100">Your Business, On Autopilot.</h1>
+        
+        <p class="fade-in-up delay-200">
+          Engine AI handles your repetitive operations—customer support, invoicing, scheduling, data entry—so you can focus on growth. No technical expertise required.
+        </p>
+        
+        <div class="hero-actions fade-in-up delay-300">
+          <a href="#start" class="btn btn-primary magnetic">
+            Get Started Free
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+          <a href="#demo" class="btn btn-secondary magnetic">Watch Demo</a>
+        </div>
+        
+        <div class="hero-trust fade-in-up delay-400">
+          <div class="hero-trust-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
+            </svg>
+            <span>4.9/5 rating</span>
+          </div>
+          <div class="hero-trust-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span>Enterprise security</span>
+          </div>
+          <div class="hero-trust-item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+            <span>Setup in 15 minutes</span>
+          </div>
+        </div>
       </div>
       
-      <div class="flex justify-center gap-4 animate-in delay-600">
-        <a href="#calculator" class="btn btn-primary">Start Automating Free</a>
-        <a href="#demo" class="btn btn-secondary">Schedule Demo</a>
+      <!-- Interactive Demo Preview -->
+      <div class="demo-preview">
+        <div class="demo-preview-header">
+          <div class="demo-dot active"></div>
+          <div class="demo-dot"></div>
+          <div class="demo-dot"></div>
+        </div>
+        <div class="demo-preview-content">
+          <div class="demo-line"><span>$</span> engineai automate support</div>
+          <div class="demo-line"><span>→</span> Analyzing support patterns...</div>
+          <div class="demo-line"><span>→</span> 3 workflows created</div>
+          <div class="demo-line"><span>→</span> Saves ~12 hours/week</div>
+          <div class="demo-line"><span>✓</span> Ready to activate</div>
+        </div>
       </div>
     </div>
   </section>
-
-  <!-- Problem Section -->
-  <section class="problem-section">
+  
+  <!-- Problem/Solution Section -->
+  <section class="problem-solution" id="problem">
     <div class="container">
-      <div class="text-center">
-        <h2 class="animate-in">You're doing the work of three people</h2>
-        <p style="margin: 1.5rem auto 0;">Every hour spent on repetitive tasks is an hour not spent growing your business.</p>
+      <div class="story-grid">
+        <div class="story-visual scroll-reveal">
+          <div class="story-bubbles">
+            <div class="story-bubble chaos">📧</div>
+            <div class="story-bubble chaos">📅</div>
+            <div class="story-bubble chaos">💬</div>
+            <div class="story-bubble chaos">📊</div>
+            <div class="story-bubble chaos">📋</div>
+          </div>
+        </div>
+        
+        <div class="story-content scroll-reveal">
+          <span class="mono subtitle">The Problem</span>
+          <h2>Drowning in Busywork</h2>
+          <p>
+            Sarah runs a boutique design agency with 8 clients. Every week she spends 15 hours on repetitive tasks: 
+            responding to the same customer inquiries, sending invoices, scheduling meetings, updating spreadsheets.
+          </p>
+          <p>
+            She knows there's a better way, but she's not technical. Custom automation feels out of reach—expensive 
+            consultants, complex tools, months of setup.
+          </p>
+        </div>
       </div>
       
-      <div class="problem-grid">
-        <div class="problem-card" data-delay="0">
-          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      <div class="story-grid" style="margin-top: 6rem;">
+        <div class="story-content scroll-reveal">
+          <span class="mono subtitle">The Solution</span>
+          <h2>Engine AI: Your Operations Team</h2>
+          <p>
+            Sarah connected her email and calendar to Engine AI. In 15 minutes, she had 3 automations running:
+            customer responses, invoice generation, and meeting scheduling.
+          </p>
+          <p>
+            Now she saves 12 hours every week. Her clients get faster responses. She focuses on creative work that 
+            actually grows her business.
+          </p>
+          <a href="#start" class="btn btn-primary magnetic" style="margin-top: 1rem;">
+            Start Saving Time
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+        
+        <div class="story-visual scroll-reveal">
+          <div class="story-bubbles">
+            <div class="story-bubble organized" style="top: 20%; left: 25%; width: 90px; height: 90px;">✓</div>
+            <div class="story-bubble organized" style="top: 50%; left: 15%; width: 70px; height: 70px;">✓</div>
+            <div class="story-bubble organized" style="top: 35%; right: 25%; width: 80px; height: 80px;">✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Product Showcase -->
+  <section id="showcase">
+    <div class="container">
+      <div class="scroll-reveal" style="text-align: center; max-width: 600px; margin: 0 auto;">
+        <span class="mono" style="color: var(--accent);">Features</span>
+        <h2>Pre-Built Automations That Actually Work</h2>
+        <p>
+          No configuration required. Choose from 50+ proven use cases, customize in minutes, and watch your operations run themselves.
+        </p>
+      </div>
+      
+      <div class="showcase-grid">
+        <div class="showcase-card scroll-reveal">
+          <div class="showcase-icon">💬</div>
+          <h3>Smart Support</h3>
+          <p>
+            AI handles 80% of customer inquiries automatically—FAQs, order status, refunds. Only complex issues reach your team.
+          </p>
+        </div>
+        
+        <div class="showcase-card scroll-reveal">
+          <div class="showcase-icon">📄</div>
+          <h3>Auto Invoicing</h3>
+          <p>
+            Generate and send invoices the moment work is complete. Automatic reminders for overdue payments.
+          </p>
+        </div>
+        
+        <div class="showcase-card scroll-reveal">
+          <div class="showcase-icon">📅</div>
+          <h3>Smart Scheduling</h3>
+          <p>
+            Coordinate meetings across time zones. Sync with your calendar, send reminders, and follow up automatically.
+          </p>
+        </div>
+        
+        <div class="showcase-card scroll-reveal">
+          <div class="showcase-icon">📊</div>
+          <h3>Data Entry</h3>
+          <p>
+            Extract information from documents, emails, and forms. Populate your CRM, spreadsheets, and databases.
+          </p>
+        </div>
+        
+        <div class="showcase-card scroll-reveal">
+          <div class="showcase-icon">🔄</div>
+          <h3>Workflows</h3>
+          <p>
+            Chain multiple automations together. Project kickoff → assignment → updates → completion → invoicing.
+          </p>
+        </div>
+        
+        <div class="showcase-card scroll-reveal">
+          <div class="showcase-icon">📈</div>
+          <h3>Reports</h3>
+          <p>
+            Weekly summaries of what was automated, time saved, and opportunities for improvement.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Social Proof -->
+  <section class="social-proof" id="proof">
+    <div class="container">
+      <div class="scroll-reveal" style="text-align: center; max-width: 600px; margin: 0 auto;">
+        <span class="mono" style="color: var(--accent);">Results</span>
+        <h2>Small Business Impact</h2>
+      </div>
+      
+      <div class="metrics-grid">
+        <div class="metric-item scroll-reveal">
+          <span class="metric-value">12h</span>
+          <span class="metric-label">Saved per week (avg)</span>
+        </div>
+        <div class="metric-item scroll-reveal">
+          <span class="metric-value">80%</span>
+          <span class="metric-label">Tasks automated</span>
+        </div>
+        <div class="metric-item scroll-reveal">
+          <span class="metric-value">2.4k</span>
+          <span class="metric-label">Businesses served</span>
+        </div>
+        <div class="metric-item scroll-reveal">
+          <span class="metric-value">15min</span>
+          <span class="metric-label">Setup time</span>
+        </div>
+      </div>
+      
+      <div class="testimonials">
+        <div class="testimonial scroll-reveal">
+          <p class="testimonial-content">
+            "I was skeptical about AI automation for my bakery. But Engine AI handles all our wholesale orders now—automatic confirmations, invoices, delivery scheduling. It's like having an assistant who never sleeps."
+          </p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">MK</div>
+            <div class="testimonial-info">
+              <h4>Maria Kim</h4>
+              <span>Owner, Sweet Crumb Bakery</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial scroll-reveal">
+          <p class="testimonial-content">
+            "Our consulting firm was drowning in admin work. Now Engine AI handles client onboarding, meeting notes, and follow-ups. We've doubled our client capacity without hiring."
+          </p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">JT</div>
+            <div class="testimonial-info">
+              <h4>James Torres</h4>
+              <span>Principal, Nexus Consulting</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial scroll-reveal">
+          <p class="testimonial-content">
+            "As a solo attorney, every minute counts. Engine AI manages my intake forms, calendar, and document drafting. I've reclaimed 15 hours each week for billable work."
+          </p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">RP</div>
+            <div class="testimonial-info">
+              <h4>Rachel Park</h4>
+              <span>Founding Attorney, Park Legal</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="testimonial scroll-reveal">
+          <p class="testimonial-content">
+            "We run a fitness studio with 200 members. Engine AI handles class bookings, payment reminders, and customer inquiries. Our front desk staff can now focus on member experience."
+          </p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">DL</div>
+            <div class="testimonial-info">
+              <h4>Dan Lopez</h4>
+              <span>Co-founder, Elevate Fitness</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="customer-logos scroll-reveal">
+        <span class="customer-logo">Sweet Crumb</span>
+        <span class="customer-logo">Nexus Consulting</span>
+        <span class="customer-logo">Park Legal</span>
+        <span class="customer-logo">Elevate Fitness</span>
+        <span class="customer-logo">Meridian Design</span>
+        <span class="customer-logo">Atlas Logistics</span>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Technical Differentiators -->
+  <section id="technical">
+    <div class="container">
+      <div class="scroll-reveal" style="text-align: center; max-width: 600px; margin: 0 auto;">
+        <span class="mono" style="color: var(--accent);">Why Engine AI</span>
+        <h2>Built for Businesses, Not Tech Companies</h2>
+      </div>
+      
+      <div class="comparison-table scroll-reveal">
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>Engine AI</th>
+              <th>Custom Development</th>
+              <th>Generic AI Tools</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="highlight">Setup time</td>
+              <td>15 minutes</td>
+              <td>3-6 months</td>
+              <td>Hours of configuration</td>
+            </tr>
+            <tr>
+              <td class="highlight">Technical skills needed</td>
+              <td>None</td>
+              <td>Development team</td>
+              <td>Prompt engineering</td>
+            </tr>
+            <tr>
+              <td class="highlight">Pre-built use cases</td>
+              <td>50+ proven</td>
+              <td>Build from scratch</td>
+              <td>Generic templates</td>
+            </tr>
+            <tr>
+              <td class="highlight">Integration support</td>
+              <td>200+ apps</td>
+              <td>Custom API work</td>
+              <td>Limited</td>
+            </tr>
+            <tr>
+              <td class="highlight">Monthly cost</td>
+              <td>$49-299</td>
+              <td>$5,000-50,000</td>
+              <td>$20-100 + add-ons</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="integration-grid scroll-reveal">
+        <div class="integration-item">
+          <div class="integration-icon">📧</div>
+          <span>Gmail</span>
+        </div>
+        <div class="integration-item">
+          <div class="integration-icon">📅</div>
+          <span>Google Calendar</span>
+        </div>
+        <div class="integration-item">
+          <div class="integration-icon">💼</div>
+          <span>Slack</span>
+        </div>
+        <div class="integration-item">
+          <div class="integration-icon">📊</div>
+          <span>Notion</span>
+        </div>
+        <div class="integration-item">
+          <div class="integration-icon">💳</div>
+          <span>Stripe</span>
+        </div>
+        <div class="integration-item">
+          <div class="integration-icon">📋</div>
+          <span>Airtable</span>
+        </div>
+        <div class="integration-item">
+          <div class="integration-icon">🛒</div>
+          <span>Shopify</span>
+        </div>
+        <div class="integration-item">
+          <div class="integration-icon">🔄</div>
+          <span>Zapier</span>
+        </div>
+      </div>
+      
+      <div class="security-badges scroll-reveal">
+        <div class="security-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
           </svg>
-          <h3>Time Drain</h3>
-          <p>20+ hours per week lost to manual data entry, scheduling, and follow-ups that could run automatically.</p>
+          <span>SOC 2 Type II</span>
         </div>
-        
-        <div class="problem-card" data-delay="200">
-          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+        <div class="security-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
           </svg>
-          <h3>Knowledge Bottleneck</h3>
-          <p>Your best processes live in one person's head. When they're away, everything stops.</p>
+          <span>256-bit encryption</span>
         </div>
-        
-        <div class="problem-card" data-delay="400">
-          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/>
+        <div class="security-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
           </svg>
-          <h3>Can't Scale</h3>
-          <p>You want to grow but adding customers means adding more manual work. That's not growth, that's a trap.</p>
+          <span>GDPR compliant</span>
+        </div>
+        <div class="security-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
+          <span>99.9% uptime</span>
         </div>
       </div>
     </div>
   </section>
-
-  <!-- Calculator Section -->
-  <section class="calculator-section" id="calculator">
+  
+  <!-- Conversion Section -->
+  <section class="conversion" id="start">
     <div class="container">
-      <div class="text-center">
-        <h2>What could you do with your time back?</h2>
-        <p style="margin: 1.5rem auto 0;">See how much time you could reclaim by automating repetitive tasks.</p>
-      </div>
-      
-      <div class="calculator-container">
-        <div class="calculator-slider-container">
-          <div class="slider-label">
-            <span>Hours spent on repetitive tasks per week</span>
-            <span class="slider-value" id="slider-value">10h</span>
-          </div>
-          <input type="range" id="time-slider" min="0" max="40" value="10" step="1">
+      <div class="conversion-content scroll-reveal">
+        <div class="urgency-banner">
+          <span>●</span>
+          <span>Limited spots: Free tier for first 500 businesses this month</span>
         </div>
         
-        <div class="calculator-results">
-          <div class="result-item">
-            <div class="result-label">Saved per week</div>
-            <div class="result-value" id="weekly-saved">7h</div>
-            <div class="result-context">Automating saves 70%</div>
-          </div>
-          
-          <div class="result-item">
-            <div class="result-label">Saved per year</div>
-            <div class="result-value" id="yearly-saved">364h</div>
-            <div class="result-context" id="yearly-context">That's 9 workweeks</div>
-          </div>
-          
-          <div class="result-item">
-            <div class="result-label">Could be doing</div>
-            <div class="result-value" id="alternative" style="font-size: 1.75rem;">Learning a new skill</div>
-            <div class="result-context">Instead of copying data</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- How It Works Section -->
-  <section class="how-section" id="how-it-works">
-    <div class="container">
-      <div class="text-center">
-        <h2>Three steps to automation</h2>
-        <p style="margin: 1.5rem auto 0;">No technical expertise required. Just pick what bothers you and we'll handle the rest.</p>
-      </div>
-      
-      <div class="steps-container">
-        <div class="step" data-delay="0">
-          <div class="step-number">01</div>
-          <div class="step-content">
-            <h3>Pick your use case</h3>
-            <p>Choose from our library of proven automations: customer support, lead qualification, data entry, report generation, and dozens more.</p>
-          </div>
-        </div>
+        <h2>Ready to Reclaim Your Time?</h2>
+        <p>
+          Join 2,400+ small businesses using Engine AI to automate their operations. Setup takes 15 minutes. No credit card required.
+        </p>
         
-        <div class="step" data-delay="200">
-          <div class="step-number">02</div>
-          <div class="step-content">
-            <h3>Connect your tools</h3>
-            <p>Link your existing software in clicks. Gmail, Slack, Stripe, HubSpot, Notion—we integrate with everything you already use.</p>
+        <form class="conversion-form" onsubmit="handleSubmit(event)">
+          <div class="form-group">
+            <input type="text" placeholder="Your name" required>
           </div>
-        </div>
+          <div class="form-group">
+            <input type="email" placeholder="Work email" required>
+          </div>
+          <div class="form-group">
+            <input type="text" placeholder="Company name" required>
+          </div>
+          <button type="submit" class="btn btn-primary magnetic" style="width: 100%; justify-content: center;">
+            Start Free Trial
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </form>
         
-        <div class="step" data-delay="400">
-          <div class="step-number">03</div>
-          <div class="step-content">
-            <h3>Watch it run</h3>
-            <p>Your automation goes live immediately. Monitor performance, tweak settings, and scale as you grow. No limits.</p>
-          </div>
+        <div class="alternative-action">
+          Not ready to commit? <a href="#demo">Watch a 2-minute demo</a> to see Engine AI in action.
         </div>
       </div>
     </div>
   </section>
-
-  <!-- Testimonials Section -->
-  <section class="testimonials-section" id="testimonials">
-    <div class="container">
-      <div class="text-center">
-        <h2>Businesses like yours are already automated</h2>
-      </div>
-      
-      <div class="testimonials-grid">
-        <div class="testimonial-card" data-delay="0">
-          <p class="testimonial-quote">"I was skeptical at first. Another AI tool, right? But this actually works. Our customer response time went from 24 hours to 2 minutes. Our customers noticed."</p>
-          <div class="testimonial-author">
-            <div class="author-avatar">MK</div>
-            <div class="author-info">
-              <div class="name">Maria Kowalski</div>
-              <div class="role">Founder, Luminary Consulting</div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="testimonial-card" data-delay="200">
-          <p class="testimonial-quote">"We automated our entire onboarding process. New clients get personalized welcome emails, calendar invites, and document requests—automatically. I saved 15 hours per week."</p>
-          <div class="testimonial-author">
-            <div class="author-avatar">JP</div>
-            <div class="author-info">
-              <div class="name">James Park</div>
-              <div class="role">CEO, Park Legal Services</div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="testimonial-card" data-delay="400">
-          <p class="testimonial-quote">"The cost savings were real. We automated invoice processing, expense tracking, and financial reporting. Our accountant now works on strategy, not data entry."</p>
-          <div class="testimonial-author">
-            <div class="author-avatar">SC</div>
-            <div class="author-info">
-              <div class="name">Sarah Chen</div>
-              <div class="role">Owner, Chen Retail Group</div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="testimonial-card" data-delay="600">
-          <p class="testimonial-quote">"I run a small bakery. I don't have a tech team. But I set up customer email automation in 20 minutes. Now I respond to inquiries while I'm baking. It's magic."</p>
-          <div class="testimonial-author">
-            <div class="author-avatar">SB</div>
-            <div class="author-info">
-              <div class="name">Sarah Bennett</div>
-              <div class="role">Founder, Sweet Rise Bakery</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Features Section -->
-  <section class="features-section" id="features">
-    <div class="container">
-      <div class="text-center">
-        <h2>Everything you need, nothing you don't</h2>
-      </div>
-      
-      <div class="features-grid">
-        <div class="feature-row" data-delay="0">
-          <div>
-            <h3>Pre-built automations</h3>
-            <p>Deploy tested workflows in minutes, not months. No custom development required.</p>
-          </div>
-          <span class="feature-status">50+ templates</span>
-        </div>
-        
-        <div class="feature-row" data-delay="100">
-          <div>
-            <h3>Enterprise security</h3>
-            <p>SOC 2 Type II certified. Your data is encrypted, isolated, and never used to train models.</p>
-          </div>
-          <span class="feature-status">SOC 2 compliant</span>
-        </div>
-        
-        <div class="feature-row" data-delay="200">
-          <div>
-            <h3>Unlimited scaling</h3>
-            <p>From 10 tasks to 10 million. Our infrastructure scales automatically without intervention.</p>
-          </div>
-          <span class="feature-status">Auto-scaling</span>
-        </div>
-        
-        <div class="feature-row" data-delay="300">
-          <div>
-            <h3>Real-time monitoring</h3>
-            <p>Watch your automations run. See what's working, what's not, and optimize in seconds.</p>
-          </div>
-          <span class="feature-status">Live dashboards</span>
-        </div>
-        
-        <div class="feature-row" data-delay="400">
-          <div>
-            <h3>Integrates with everything</h3>
-            <p>Gmail, Slack, Stripe, HubSpot, Salesforce, Notion, and 200+ other tools you already use.</p>
-          </div>
-          <span class="feature-status">200+ integrations</span>
-        </div>
-        
-        <div class="feature-row" data-delay="500">
-          <div>
-            <h3>Human support when you need it</h3>
-            <p>Not a chatbot that loops. Real humans who understand your business and help you succeed.</p>
-          </div>
-          <span class="feature-status">24/7 support</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Final CTA Section -->
-  <section class="cta-section" id="demo">
-    <div class="container cta-content">
-      <h2>Ready to reclaim your time?</h2>
-      <p style="margin: 1.5rem auto 0;">Join hundreds of small businesses already running on Engine AI. Start automating today—no credit card required.</p>
-      
-      <div class="cta-buttons">
-        <a href="#" class="btn btn-primary">Start Automating Free</a>
-        <a href="#" class="btn btn-secondary">Schedule Demo</a>
-      </div>
-      
-      <p class="urgency-note">Free tier includes 10K automations/month • Cancel anytime • No credit card required</p>
-    </div>
-  </section>
-
+  
   <!-- Footer -->
   <footer>
-    <div class="container footer-content">
-      <div>
-        <a href="#" class="logo">Engine AI</a>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h4>Engine<span>AI</span></h4>
+          <p>AI-powered operations automation for small businesses. No technical expertise required.</p>
+        </div>
+        
+        <div class="footer-links">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="#showcase">Features</a></li>
+            <li><a href="#technical">Integrations</a></li>
+            <li><a href="#">Pricing</a></li>
+            <li><a href="#">Changelog</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-links">
+          <h5>Company</h5>
+          <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-links">
+          <h5>Legal</h5>
+          <ul>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Terms</a></li>
+            <li><a href="#">Security</a></li>
+          </ul>
+          
+          <h5 style="margin-top: 1.5rem;">Stay Updated</h5>
+          <form class="newsletter-form" onsubmit="handleNewsletter(event)">
+            <input type="email" placeholder="Your email">
+            <button type="submit">→</button>
+          </form>
+        </div>
       </div>
       
-      <div class="footer-links">
-        <a href="#">Privacy</a>
-        <a href="#">Terms</a>
-        <a href="#">Security</a>
-        <a href="#">Contact</a>
+      <div class="footer-bottom">
+        <p>© 2026 Engine AI. All rights reserved.</p>
+        <div class="social-links">
+          <a href="#" aria-label="Twitter">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+          </a>
+          <a href="#" aria-label="LinkedIn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+          </a>
+          <a href="#" aria-label="GitHub">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+          </a>
+        </div>
       </div>
-      
-      <p class="footer-copyright">© 2026 Engine AI. All rights reserved.</p>
     </div>
   </footer>
-
+  
   <script>
-    // Bubbling Water Animation (Preserved from original)
-    (function() {
-      const canvas = document.getElementById('bubbling-canvas');
-      if (!canvas) return;
+    // ============================================
+    // WATER BUBBLE BACKGROUND ANIMATION
+    // ============================================
+    const canvas = document.getElementById('bubble-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    let bubbles = [];
+    let mouseX = 0;
+    let mouseY = 0;
+    let rippleX = null;
+    let rippleY = null;
+    
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initBubbles();
+    }
+    
+    function initBubbles() {
+      bubbles = [];
+      const numBubbles = Math.floor((canvas.width * canvas.height) / 25000);
       
-      const ctx = canvas.getContext('2d');
-      let animationFrameId;
-
-      const resizeCanvas = () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      };
-
-      resizeCanvas();
-      window.addEventListener('resize', resizeCanvas);
-
-      const bubbles = [];
-      const numColumns = 12;
-
-      const createBubbles = () => {
-        const columnWidth = canvas.width / numColumns;
-        for (let col = 0; col < numColumns; col++) {
-          const isCentral = col >= 4 && col <= 7;
-          const bubbleCount = isCentral ? 40 : 20;
-          
-          for (let i = 0; i < bubbleCount; i++) {
-            const xBase = col * columnWidth + columnWidth / 2;
-            const xSpread = isCentral ? 40 : 60;
-            
-            bubbles.push({
-              x: xBase + (Math.random() - 0.5) * xSpread,
-              y: canvas.height + Math.random() * 200,
-              radius: Math.random() * 3 + 1,
-              speed: Math.random() * 1.5 + 0.5,
-              opacity: Math.random() * 0.6 + 0.2,
-              column: col,
-            });
-          }
+      for (let i = 0; i < numBubbles; i++) {
+        bubbles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 40 + 20,
+          speedY: Math.random() * 0.3 + 0.1,
+          speedX: (Math.random() - 0.5) * 0.2,
+          opacity: Math.random() * 0.03 + 0.01,
+          color: Math.random() > 0.5 ? 'rgba(0, 255, 170,' : 'rgba(0, 200, 170,'
+        });
+      }
+    }
+    
+    function drawBubbles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      bubbles.forEach(bubble => {
+        // Update position
+        bubble.y -= bubble.speedY;
+        bubble.x += bubble.speedX;
+        
+        // Wrap around
+        if (bubble.y + bubble.radius < 0) {
+          bubble.y = canvas.height + bubble.radius;
+          bubble.x = Math.random() * canvas.width;
         }
-      };
-
-      createBubbles();
-
-      const animate = () => {
-        ctx.fillStyle = 'rgba(10, 10, 15, 1)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+        if (bubble.x < -bubble.radius) bubble.x = canvas.width + bubble.radius;
+        if (bubble.x > canvas.width + bubble.radius) bubble.x = -bubble.radius;
+        
+        // Mouse interaction (subtle repulsion)
+        const dx = bubble.x - mouseX;
+        const dy = bubble.y - mouseY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 150) {
+          const force = (150 - dist) / 150;
+          bubble.x += dx * force * 0.02;
+          bubble.y += dy * force * 0.02;
+        }
+        
+        // Draw bubble
         const gradient = ctx.createRadialGradient(
-          canvas.width / 2,
-          canvas.height * 0.6,
-          0,
-          canvas.width / 2,
-          canvas.height * 0.6,
-          canvas.width * 0.6
+          bubble.x, bubble.y, 0,
+          bubble.x, bubble.y, bubble.radius
         );
-        gradient.addColorStop(0, 'rgba(0, 200, 220, 0.15)');
-        gradient.addColorStop(0.5, 'rgba(0, 150, 180, 0.08)');
-        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        gradient.addColorStop(0, bubble.color + bubble.opacity + ')');
+        gradient.addColorStop(0.5, bubble.color + (bubble.opacity * 0.5) + ')');
+        gradient.addColorStop(1, bubble.color + '0)');
         
+        ctx.beginPath();
+        ctx.arc(bubble.x, bubble.y, bubble.radius, 0, Math.PI * 2);
         ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        bubbles.forEach((bubble) => {
-          bubble.y -= bubble.speed;
-          bubble.x += Math.sin(bubble.y * 0.01) * 0.3;
-
-          if (bubble.y < -10) {
-            bubble.y = canvas.height + Math.random() * 100;
-            const columnWidth = canvas.width / numColumns;
-            const xBase = bubble.column * columnWidth + columnWidth / 2;
-            const isCentral = bubble.column >= 4 && bubble.column <= 7;
-            const xSpread = isCentral ? 40 : 60;
-            bubble.x = xBase + (Math.random() - 0.5) * xSpread;
-          }
-
-          const alpha = bubble.opacity * (1 - (bubble.y / canvas.height) * 0.3);
-          
-          const glowGradient = ctx.createRadialGradient(
-            bubble.x, bubble.y, 0,
-            bubble.x, bubble.y, bubble.radius * 4
-          );
-          glowGradient.addColorStop(0, `rgba(0, 220, 255, ${alpha * 0.5})`);
-          glowGradient.addColorStop(1, 'rgba(0, 220, 255, 0)');
-          
-          ctx.fillStyle = glowGradient;
-          ctx.beginPath();
-          ctx.arc(bubble.x, bubble.y, bubble.radius * 4, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.fillStyle = `rgba(150, 230, 255, ${alpha})`;
-          ctx.beginPath();
-          ctx.arc(bubble.x, bubble.y, bubble.radius, 0, Math.PI * 2);
-          ctx.fill();
-
-          ctx.fillStyle = `rgba(255, 255, 255, ${alpha * 0.8})`;
-          ctx.beginPath();
-          ctx.arc(bubble.x - bubble.radius * 0.3, bubble.y - bubble.radius * 0.3, bubble.radius * 0.3, 0, Math.PI * 2);
-          ctx.fill();
-        });
-
-        animationFrameId = requestAnimationFrame(animate);
-      };
-
-      animate();
-    })();
-
-    // Calculator Logic
-    (function() {
-      const slider = document.getElementById('time-slider');
-      const sliderValue = document.getElementById('slider-value');
-      const weeklySaved = document.getElementById('weekly-saved');
-      const yearlySaved = document.getElementById('yearly-saved');
-      const yearlyContext = document.getElementById('yearly-context');
-      const alternative = document.getElementById('alternative');
-
-      const alternatives = [
-        { hours: 0, text: 'Enjoying your weekend' },
-        { hours: 50, text: 'Learning a new skill' },
-        { hours: 100, text: 'Taking a real vacation' },
-        { hours: 200, text: 'Spending time with family' },
-        { hours: 300, text: 'Building a new product' },
-        { hours: 400, text: 'Hiring that extra help' },
-        { hours: 500, text: 'Scaling your business' },
-        { hours: 600, text: 'Changing your industry' },
-      ];
-
-      const updateCalculator = (value) => {
-        const hours = parseInt(value);
-        sliderValue.textContent = hours + 'h';
-        
-        const weekly = Math.round(hours * 0.7);
-        weeklySaved.textContent = weekly + 'h';
-        
-        const yearly = weekly * 52;
-        yearlySaved.textContent = yearly + 'h';
-        
-        // Calculate work weeks (40 hours per week)
-        const workWeeks = Math.round(yearly / 40);
-        if (workWeeks >= 1) {
-          yearlyContext.textContent = `That's ${workWeeks} ${workWeeks === 1 ? 'workweek' : 'workweeks'}`;
-        } else {
-          yearlyContext.textContent = `That's ${yearly} extra hours per year`;
-        }
-        
-        // Find appropriate alternative
-        let alt = alternatives[0];
-        for (const a of alternatives) {
-          if (yearly >= a.hours) alt = a;
-        }
-        alternative.textContent = alt.text;
-      };
-
-      slider.addEventListener('input', (e) => {
-        updateCalculator(e.target.value);
+        ctx.fill();
       });
-
-      // Initialize
-      updateCalculator(slider.value);
-    })();
-
-    // Scroll Animations
-    (function() {
-      const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-      };
-
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const delay = entry.target.dataset.delay || 0;
-            setTimeout(() => {
-              entry.target.classList.add('visible');
-            }, delay);
-            observer.unobserve(entry.target);
-          }
-        });
-      }, observerOptions);
-
-      // Observe elements
-      document.querySelectorAll('.problem-card, .step, .testimonial-card, .feature-row').forEach(el => {
-        observer.observe(el);
+      
+      // Draw ripple effect
+      if (rippleX !== null && rippleY !== null) {
+        ctx.beginPath();
+        ctx.arc(rippleX, rippleY, 50, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(0, 255, 170, 0.1)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+      
+      requestAnimationFrame(drawBubbles);
+    }
+    
+    // Mouse tracking for bubble interaction
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+    
+    // Click ripple effect
+    document.addEventListener('click', (e) => {
+      rippleX = e.clientX;
+      rippleY = e.clientY;
+      setTimeout(() => {
+        rippleX = null;
+        rippleY = null;
+      }, 500);
+    });
+    
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    drawBubbles();
+    
+    // ============================================
+    // NAVIGATION SCROLL EFFECT
+    // ============================================
+    const navbar = document.getElementById('navbar');
+    let lastScroll = 0;
+    
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+      
+      if (currentScroll > 100) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+      
+      lastScroll = currentScroll;
+    });
+    
+    // ============================================
+    // SCROLL REVEAL ANIMATIONS
+    // ============================================
+    const scrollRevealElements = document.querySelectorAll('.scroll-reveal');
+    
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
       });
-    })();
-
-    // Smooth scroll for anchor links
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    });
+    
+    scrollRevealElements.forEach(el => revealObserver.observe(el));
+    
+    // ============================================
+    // MAGNETIC BUTTON EFFECT
+    // ============================================
+    const magneticElements = document.querySelectorAll('.magnetic');
+    
+    magneticElements.forEach(el => {
+      el.addEventListener('mousemove', (e) => {
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        
+        el.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+      });
+      
+      el.addEventListener('mouseleave', () => {
+        el.style.transform = '';
+      });
+    });
+    
+    // ============================================
+    // FORM HANDLERS
+    // ============================================
+    function handleSubmit(e) {
+      e.preventDefault();
+      const button = e.target.querySelector('button');
+      button.textContent = 'Setting Up Your Account...';
+      button.disabled = true;
+      
+      setTimeout(() => {
+        alert('Welcome to Engine AI! Check your email for next steps.');
+        button.textContent = 'Check Your Email →';
+      }, 1500);
+    }
+    
+    function handleNewsletter(e) {
+      e.preventDefault();
+      const input = e.target.querySelector('input');
+      const button = e.target.querySelector('button');
+      
+      button.textContent = '✓';
+      input.value = '';
+      
+      setTimeout(() => {
+        button.textContent = '→';
+      }, 2000);
+    }
+    
+    // ============================================
+    // SMOOTH SCROLL FOR ANCHOR LINKS
+    // ============================================
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function(e) {
         e.preventDefault();
