@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Engine AI - Intelligence That Flows</title>
+    <title>Engine AI — Dive Into Infinite Context</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -23,6 +23,8 @@
             --text-primary: #E8F4F8;
             --text-secondary: #A7C5D9;
             --text-dim: #6B8B9E;
+            --surface: rgba(15, 41, 66, 0.6);
+            --surface-highlight: rgba(30, 136, 229, 0.15);
         }
 
         html {
@@ -35,6 +37,35 @@
             color: var(--text-primary);
             overflow-x: hidden;
             line-height: 1.6;
+            cursor: default;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary-bubble);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            transition: transform 0.15s ease, opacity 0.15s ease;
+            mix-blend-mode: difference;
+        }
+
+        .cursor.hover {
+            transform: scale(2);
+            background: rgba(30, 136, 229, 0.2);
+        }
+
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--primary-bubble);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 10001;
         }
 
         /* Bubble Canvas Background */
@@ -106,12 +137,15 @@
             transition: height 0.1s ease-out;
         }
 
-        /* Bioluminescent Creatures */
-        .creature {
+        /* Creatures Container */
+        #creatures {
             position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             pointer-events: none;
             z-index: 1;
-            opacity: 0;
         }
 
         /* Content Wrapper */
@@ -127,41 +161,77 @@
             left: 0;
             right: 0;
             z-index: 100;
-            padding: 20px 50px;
+            padding: 25px 60px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(10, 22, 40, 0.8);
+            background: rgba(10, 22, 40, 0.7);
             backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 1px solid rgba(30, 136, 229, 0.1);
         }
 
         nav.scrolled {
-            padding: 15px 50px;
+            padding: 15px 60px;
             background: rgba(10, 22, 40, 0.95);
+            border-bottom-color: rgba(30, 136, 229, 0.3);
         }
 
         nav .logo {
             font-family: 'Cinzel', serif;
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 700;
             color: var(--primary-bubble);
             text-shadow: 0 0 30px var(--primary-bubble);
+            text-decoration: none;
+            position: relative;
+        }
+
+        nav .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-bubble), transparent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        nav .logo:hover::after {
+            transform: scaleX(1);
         }
 
         nav .nav-links {
             display: flex;
-            gap: 30px;
+            gap: 40px;
         }
 
         nav .nav-links a {
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 5px 0;
+        }
+
+        nav .nav-links a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--primary-bubble);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
         }
 
         nav .nav-links a:hover {
@@ -169,559 +239,756 @@
             text-shadow: 0 0 10px var(--primary-bubble);
         }
 
-        nav .cta-button {
+        nav .nav-links a:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        nav .magnetic-button {
             background: var(--coral-accent);
             color: var(--deep-ocean);
-            padding: 12px 28px;
-            border-radius: 25px;
+            padding: 14px 32px;
+            border-radius: 30px;
             text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+            box-shadow: 0 0 25px rgba(255, 107, 53, 0.3);
+            position: relative;
+            overflow: hidden;
         }
 
-        nav .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 30px rgba(255, 107, 53, 0.5);
+        nav .magnetic-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s ease, height 0.6s ease;
         }
 
-        /* Hero Section */
+        nav .magnetic-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        nav .magnetic-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 40px rgba(255, 107, 53, 0.5);
+        }
+
+        nav .magnetic-button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero Section - Bold Split Layout */
         .hero {
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 120px 50px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-content {
-            text-align: center;
-            max-width: 900px;
-            position: relative;
-            z-index: 10;
-        }
-
-        .hero-bubble {
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle at 30% 30%, rgba(30, 136, 229, 0.3), rgba(10, 22, 40, 0.8));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 50px;
-            position: relative;
-            box-shadow: 
-                0 0 100px rgba(30, 136, 229, 0.4),
-                inset 0 0 100px rgba(30, 136, 229, 0.2),
-                inset -20px -20px 60px rgba(0, 0, 0, 0.3);
-            animation: float 8s ease-in-out infinite;
-        }
-
-        .hero-bubble::before {
-            content: '';
-            position: absolute;
-            top: 15%;
-            left: 20%;
-            width: 30%;
-            height: 20%;
-            background: radial-gradient(ellipse, rgba(255, 255, 255, 0.3), transparent);
-            border-radius: 50%;
-            transform: rotate(-30deg);
-        }
-
-        .hero-bubble-content {
-            padding: 80px;
-            position: relative;
-        }
-
-        .hero h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 56px;
-            font-weight: 900;
-            color: var(--text-primary);
-            line-height: 1.1;
-            margin-bottom: 30px;
-            text-shadow: 0 0 40px rgba(30, 136, 229, 0.6);
-            animation: textRefract 4s ease-in-out infinite;
-        }
-
-        @keyframes textRefract {
-            0%, 100% { 
-                text-shadow: 
-                    0 0 40px rgba(30, 136, 229, 0.6),
-                    2px 0 20px rgba(30, 136, 229, 0.3);
-            }
-            50% { 
-                text-shadow: 
-                    0 0 60px rgba(30, 136, 229, 0.8),
-                    -2px 0 25px rgba(30, 136, 229, 0.4),
-                    0 0 80px rgba(66, 165, 245, 0.4);
-            }
-        }
-
-        .hero .subtitle {
-            font-size: 20px;
-            color: var(--text-secondary);
-            font-weight: 300;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 40px;
-        }
-
-        .hero .description {
-            font-size: 18px;
-            color: var(--text-secondary);
-            max-width: 700px;
-            margin: 0 auto 40px;
-            line-height: 1.8;
-        }
-
-        .hero .cta-group {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .primary-cta {
-            background: linear-gradient(135deg, var(--coral-accent), #FF8F5A);
-            color: var(--deep-ocean);
-            padding: 18px 40px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 16px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 30px rgba(255, 107, 53, 0.4);
-        }
-
-        .primary-cta:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 0 50px rgba(255, 107, 53, 0.6);
-        }
-
-        .secondary-cta {
-            background: transparent;
-            color: var(--primary-bubble);
-            padding: 18px 40px;
-            border: 2px solid var(--primary-bubble);
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 16px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(30, 136, 229, 0.2);
-        }
-
-        .secondary-cta:hover {
-            background: rgba(30, 136, 229, 0.1);
-            box-shadow: 0 0 40px rgba(30, 136, 229, 0.4);
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(1deg); }
-        }
-
-        /* Section Base Styles */
-        section {
-            padding: 120px 50px;
-            position: relative;
-            transition: background 0.5s ease;
-        }
-
-        section.deep {
-            background: rgba(5, 12, 22, 0.6);
-        }
-
-        section.deeper {
-            background: rgba(3, 8, 16, 0.8);
-        }
-
-        .section-title {
-            font-family: 'Cinzel', serif;
-            font-size: 42px;
-            font-weight: 700;
-            color: var(--text-primary);
-            text-align: center;
-            margin-bottom: 20px;
-            text-shadow: 0 0 30px var(--primary-bubble);
-        }
-
-        .section-subtitle {
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 18px;
-            max-width: 700px;
-            margin: 0 auto 60px;
-            font-weight: 300;
-        }
-
-        /* Problem Section */
-        .problem-section {
-            background: rgba(15, 41, 66, 0.4);
-        }
-
-        .fractured-blocks {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-top: 60px;
-        }
-
-        .fractured-block {
-            background: rgba(10, 22, 40, 0.8);
-            border: 1px solid rgba(30, 136, 229, 0.2);
-            border-radius: 15px;
-            padding: 40px;
+            grid-template-columns: 1fr 1fr;
+            padding: 120px 60px 60px;
             position: relative;
-            overflow: hidden;
-            transition: all 0.4s ease;
-        }
-
-        .fractured-block::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--primary-bubble), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.6s ease;
-        }
-
-        .fractured-block:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary-bubble);
-            box-shadow: 0 10px 40px rgba(30, 136, 229, 0.2);
-        }
-
-        .fractured-block:hover::before {
-            transform: translateX(0);
-        }
-
-        .fractured-block .icon {
-            font-size: 40px;
-            margin-bottom: 20px;
-            opacity: 0.7;
-        }
-
-        .fractured-block h3 {
-            font-family: 'Cinzel', serif;
-            font-size: 22px;
-            color: var(--coral-accent);
-            margin-bottom: 15px;
-        }
-
-        .fractured-block p {
-            color: var(--text-secondary);
-            line-height: 1.7;
-            font-size: 15px;
-        }
-
-        .fractured-block .fracture-line {
-            position: absolute;
-            background: linear-gradient(45deg, transparent, rgba(255, 107, 53, 0.3), transparent);
-            width: 100%;
-            height: 1px;
-            top: 50%;
-            left: 0;
-            transform: rotate(-5deg);
-        }
-
-        /* Solution Section */
-        .solution-section {
-            background: rgba(10, 22, 40, 0.6);
-        }
-
-        .flow-diagram {
-            display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin: 60px 0;
+            gap: 80px;
         }
 
-        .flow-step {
-            background: rgba(30, 136, 229, 0.1);
-            border: 2px solid var(--primary-bubble);
+        .hero-left {
+            opacity: 0;
+            transform: translateX(-60px);
+            animation: slideInLeft 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            animation-delay: 200ms;
+        }
+
+        @keyframes slideInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 18px;
+            background: var(--surface-highlight);
+            border: 1px solid rgba(30, 136, 229, 0.3);
             border-radius: 20px;
-            padding: 30px 25px;
-            text-align: center;
-            min-width: 180px;
-            position: relative;
-            transition: all 0.4s ease;
-            cursor: pointer;
-        }
-
-        .flow-step:hover {
-            background: rgba(30, 136, 229, 0.2);
-            box-shadow: 0 0 30px rgba(30, 136, 229, 0.4);
-            transform: scale(1.05);
-        }
-
-        .flow-step .step-icon {
-            font-size: 32px;
-            margin-bottom: 15px;
-        }
-
-        .flow-step h4 {
             font-family: 'Space Mono', monospace;
-            font-size: 16px;
+            font-size: 11px;
             color: var(--primary-bubble);
-            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
         }
 
-        .flow-step p {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        .flow-arrow {
-            font-size: 30px;
-            color: var(--primary-bubble);
+        .hero-badge .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--coral-accent);
+            border-radius: 50%;
             animation: pulse 2s ease-in-out infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 0.5; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
         }
 
-        .solution-benefits {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-top: 60px;
-        }
-
-        .benefit-card {
-            text-align: center;
-            padding: 30px;
-        }
-
-        .benefit-card .benefit-number {
-            font-family: 'Space Mono', monospace;
-            font-size: 48px;
-            font-weight: 700;
-            color: var(--primary-bubble);
-            opacity: 0.3;
-            margin-bottom: 10px;
-        }
-
-        .benefit-card h3 {
+        .hero h1 {
             font-family: 'Cinzel', serif;
-            font-size: 20px;
+            font-size: clamp(42px, 6vw, 72px);
+            font-weight: 900;
+            line-height: 1.05;
+            margin-bottom: 30px;
             color: var(--text-primary);
-            margin-bottom: 10px;
         }
 
-        .benefit-card p {
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, var(--primary-bubble), var(--bubble-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+
+        .hero .value-prop {
+            font-size: 19px;
             color: var(--text-secondary);
-            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 40px;
+            max-width: 520px;
+            font-weight: 300;
         }
 
-        /* Product Showcase */
-        .showcase-section {
-            background: rgba(5, 12, 22, 0.7);
+        .hero-cta {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
-        .interface-mockup {
-            max-width: 1000px;
-            margin: 60px auto;
-            background: rgba(10, 22, 40, 0.9);
-            border: 1px solid var(--primary-bubble);
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 0 60px rgba(30, 136, 229, 0.3);
+        .magnetic-cta {
+            background: linear-gradient(135deg, var(--coral-accent), #FF8F5A);
+            color: var(--deep-ocean);
+            padding: 20px 45px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 40px rgba(255, 107, 53, 0.3);
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .mockup-header {
-            background: rgba(30, 136, 229, 0.2);
-            padding: 15px 20px;
+        .magnetic-cta::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            background: linear-gradient(135deg, var(--coral-accent), #FF8F5A);
+            border-radius: 50px;
+            opacity: 0;
+            filter: blur(15px);
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+
+        .magnetic-cta:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(255, 107, 53, 0.4);
+        }
+
+        .magnetic-cta:hover::before {
+            opacity: 0.7;
+        }
+
+        .magnetic-cta .arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .magnetic-cta:hover .arrow {
+            transform: translateX(5px);
+        }
+
+        .hero-trust {
             display: flex;
             align-items: center;
-            gap: 10px;
-            border-bottom: 1px solid var(--primary-bubble);
+            gap: 30px;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(30, 136, 229, 0.2);
         }
 
-        .mockup-header .dot {
+        .hero-trust .label {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero-trust .avatars {
+            display: flex;
+        }
+
+        .hero-trust .avatars .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-bubble), var(--bubble-glow));
+            border: 3px solid var(--deep-ocean);
+            margin-left: -12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .hero-trust .avatars .avatar:first-child {
+            margin-left: 0;
+        }
+
+        .hero-trust .count {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .hero-trust .count strong {
+            color: var(--primary-bubble);
+        }
+
+        /* Hero Right - Interactive Element */
+        .hero-right {
+            position: relative;
+            opacity: 0;
+            transform: translateX(60px);
+            animation: slideInRight 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            animation-delay: 400ms;
+        }
+
+        @keyframes slideInRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .hero-visual {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+        }
+
+        .depth-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(30, 136, 229, 0.2);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .depth-ring:nth-child(1) {
+            width: 100%;
+            height: 100%;
+            animation: rotate 30s linear infinite;
+        }
+
+        .depth-ring:nth-child(2) {
+            width: 75%;
+            height: 75%;
+            animation: rotate 25s linear infinite reverse;
+            border-color: rgba(30, 136, 229, 0.3);
+        }
+
+        .depth-ring:nth-child(3) {
+            width: 50%;
+            height: 50%;
+            animation: rotate 20s linear infinite;
+            border-color: rgba(66, 165, 245, 0.4);
+        }
+
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .hero-core {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 35%;
+            height: 35%;
+            background: radial-gradient(circle, rgba(30, 136, 229, 0.4) 0%, rgba(10, 22, 40, 0.9) 70%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            box-shadow: 
+                0 0 60px rgba(30, 136, 229, 0.5),
+                inset 0 0 40px rgba(30, 136, 229, 0.3);
+        }
+
+        .hero-core .metric {
+            font-family: 'Space Mono', monospace;
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary-bubble);
+            text-shadow: 0 0 20px var(--primary-bubble);
+        }
+
+        .hero-core .label {
+            font-size: 11px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        .floating-nodes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .node {
+            position: absolute;
             width: 12px;
             height: 12px;
-            border-radius: 50%;
-            background: var(--coral-accent);
-        }
-
-        .mockup-header .dot:nth-child(2) {
             background: var(--primary-bubble);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--primary-bubble);
+            animation: float 6s ease-in-out infinite;
         }
 
-        .mockup-header .dot:nth-child(3) {
-            background: #4CAF50;
+        .node:nth-child(1) { top: 15%; left: 20%; animation-delay: 0s; }
+        .node:nth-child(2) { top: 25%; right: 15%; animation-delay: 1s; }
+        .node:nth-child(3) { bottom: 20%; left: 15%; animation-delay: 2s; }
+        .node:nth-child(4) { bottom: 30%; right: 25%; animation-delay: 3s; }
+        .node:nth-child(5) { top: 50%; left: 8%; animation-delay: 4s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
         }
 
-        .mockup-header .title {
-            margin-left: 20px;
+        /* Section Base */
+        section {
+            padding: 120px 60px;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .section-header.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header .overline {
             font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            color: var(--coral-accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .section-header h2 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(32px, 5vw, 52px);
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .section-header p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 25px auto 0;
+            font-weight: 300;
+        }
+
+        /* Problem Narrative - Story Format */
+        .narrative-section {
+            background: linear-gradient(180deg, rgba(5, 12, 22, 0.8) 0%, rgba(10, 22, 40, 0.6) 100%);
+        }
+
+        .narrative-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .narrative-block {
+            background: var(--surface);
+            border: 1px solid rgba(30, 136, 229, 0.2);
+            border-radius: 24px;
+            padding: 50px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .narrative-block.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .narrative-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--coral-accent), var(--primary-bubble));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.6s ease;
+        }
+
+        .narrative-block:hover::before {
+            transform: scaleX(1);
+        }
+
+        .narrative-block .chapter {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .narrative-block h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 28px;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .narrative-block p {
+            font-size: 17px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .narrative-block .stat-highlight {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 8px;
+            background: var(--surface-highlight);
+            padding: 8px 16px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .narrative-block .stat-highlight .number {
+            font-family: 'Space Mono', monospace;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--coral-accent);
+            line-height: 1;
+        }
+
+        .narrative-block .stat-highlight .text {
             font-size: 13px;
             color: var(--text-secondary);
         }
 
-        .mockup-body {
-            padding: 40px;
-            min-height: 400px;
+        /* Solution Flow Diagram */
+        .flow-section {
+            background: rgba(10, 22, 40, 0.7);
         }
 
-        .conversation-thread {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .message {
-            display: flex;
-            gap: 15px;
-            opacity: 0;
-            animation: fadeInUp 0.6s ease forwards;
-        }
-
-        .message:nth-child(1) { animation-delay: 0.2s; }
-        .message:nth-child(2) { animation-delay: 0.6s; }
-        .message:nth-child(3) { animation-delay: 1s; }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .message.user {
-            flex-direction: row-reverse;
-        }
-
-        .message .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--primary-bubble);
+        .flow-container {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            flex-shrink: 0;
+            gap: 0;
+            flex-wrap: wrap;
+            margin: 80px 0;
         }
 
-        .message.user .avatar {
-            background: var(--coral-accent);
-        }
-
-        .message .bubble {
-            background: rgba(30, 136, 229, 0.1);
-            border: 1px solid rgba(30, 136, 229, 0.3);
-            border-radius: 15px;
-            padding: 15px 20px;
-            max-width: 70%;
-        }
-
-        .message.user .bubble {
-            background: rgba(255, 107, 53, 0.1);
-            border-color: rgba(255, 107, 53, 0.3);
-        }
-
-        .message .bubble .sender {
-            font-family: 'Space Mono', monospace;
-            font-size: 11px;
-            color: var(--primary-bubble);
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-
-        .message .bubble .text {
-            font-size: 14px;
-            color: var(--text-primary);
-            line-height: 1.6;
-        }
-
-        .message .bubble .context-hint {
-            font-family: 'Space Mono', monospace;
-            font-size: 10px;
-            color: var(--text-dim);
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px dashed rgba(30, 136, 229, 0.2);
-        }
-
-        .continuity-indicator {
+        .flow-node {
+            background: var(--surface);
+            border: 2px solid rgba(30, 136, 229, 0.3);
+            border-radius: 20px;
+            padding: 40px 35px;
             text-align: center;
-            padding: 30px;
-            background: rgba(30, 136, 229, 0.05);
-            border-top: 1px solid rgba(30, 136, 229, 0.2);
+            min-width: 200px;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(30px);
         }
 
-        .continuity-indicator .text {
-            font-family: 'Space Mono', monospace;
-            font-size: 12px;
-            color: var(--text-dim);
+        .flow-node.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .flow-node:nth-child(1) { transition-delay: 0ms; }
+        .flow-node:nth-child(3) { transition-delay: 150ms; }
+        .flow-node:nth-child(5) { transition-delay: 300ms; }
+        .flow-node:nth-child(7) { transition-delay: 450ms; }
+
+        .flow-node:hover {
+            border-color: var(--primary-bubble);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(30, 136, 229, 0.3);
+        }
+
+        .flow-node .icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .flow-node h4 {
+            font-family: 'Cinzel', serif;
+            font-size: 18px;
+            color: var(--text-primary);
             margin-bottom: 10px;
         }
 
-        .continuity-indicator .metric {
-            font-size: 24px;
-            font-weight: 700;
+        .flow-node p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .flow-connector {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-bubble), var(--bubble-glow));
+            position: relative;
+            opacity: 0;
+            transition: opacity 0.4s ease 0.2s;
+        }
+
+        .flow-connector.visible {
+            opacity: 1;
+        }
+
+        .flow-connector::after {
+            content: '';
+            position: absolute;
+            right: -6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid var(--bubble-glow);
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+        }
+
+        /* Product Showcase - Interactive Terminal */
+        .showcase-section {
+            background: linear-gradient(180deg, rgba(3, 8, 16, 0.9) 0%, rgba(10, 22, 40, 0.7) 100%);
+        }
+
+        .terminal-container {
+            max-width: 1000px;
+            margin: 60px auto;
+            background: rgba(10, 22, 40, 0.95);
+            border: 1px solid rgba(30, 136, 229, 0.3);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 
+                0 0 80px rgba(30, 136, 229, 0.2),
+                0 30px 60px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .terminal-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .terminal-header {
+            background: rgba(30, 136, 229, 0.15);
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(30, 136, 229, 0.3);
+        }
+
+        .terminal-header .dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .terminal-header .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-header .dot.red { background: #FF5F57; }
+        .terminal-header .dot.yellow { background: #FFBD2E; }
+        .terminal-header .dot.green { background: #28CA42; }
+
+        .terminal-header .title {
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-left: 20px;
+        }
+
+        .terminal-body {
+            padding: 30px;
+            min-height: 450px;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .terminal-line {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: terminalSlide 0.5s ease forwards;
+        }
+
+        .terminal-line:nth-child(1) { animation-delay: 0.3s; }
+        .terminal-line:nth-child(2) { animation-delay: 0.8s; }
+        .terminal-line:nth-child(3) { animation-delay: 1.3s; }
+        .terminal-line:nth-child(4) { animation-delay: 2.2s; }
+        .terminal-line:nth-child(5) { animation-delay: 3.2s; }
+
+        @keyframes terminalSlide {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .terminal-prompt {
             color: var(--primary-bubble);
+            flex-shrink: 0;
         }
 
-        /* Social Proof */
-        .social-proof-section {
-            background: rgba(10, 22, 40, 0.5);
+        .terminal-prompt.user { color: var(--coral-accent); }
+
+        .terminal-content {
+            color: var(--text-primary);
+            line-height: 1.7;
         }
 
-        .testimonial-grid {
+        .terminal-content .timestamp {
+            color: var(--text-dim);
+            font-size: 11px;
+        }
+
+        .terminal-content .context-badge {
+            display: inline-block;
+            background: rgba(30, 136, 229, 0.2);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            color: var(--bubble-glow);
+            margin-left: 10px;
+        }
+
+        .typing-indicator {
+            display: inline-flex;
+            gap: 4px;
+            margin-left: 10px;
+        }
+
+        .typing-indicator span {
+            width: 6px;
+            height: 6px;
+            background: var(--primary-bubble);
+            border-radius: 50%;
+            animation: typing 1.4s ease-in-out infinite;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-8px); opacity: 1; }
+        }
+
+        /* Social Proof - Masonry Grid */
+        .proof-section {
+            background: rgba(10, 22, 40, 0.6);
+        }
+
+        .proof-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
             gap: 30px;
             margin: 60px 0;
         }
 
         .testimonial-card {
-            background: rgba(15, 41, 66, 0.5);
+            background: var(--surface);
             border: 1px solid rgba(30, 136, 229, 0.2);
-            border-radius: 15px;
-            padding: 35px;
+            border-radius: 20px;
+            padding: 40px;
             position: relative;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .testimonial-card.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .testimonial-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
             border-color: var(--primary-bubble);
-            box-shadow: 0 10px 40px rgba(30, 136, 229, 0.15);
+            box-shadow: 0 20px 60px rgba(30, 136, 229, 0.2);
         }
 
         .testimonial-card::before {
             content: '"';
             font-family: 'Cinzel', serif;
-            font-size: 72px;
+            font-size: 80px;
             color: var(--primary-bubble);
-            opacity: 0.2;
+            opacity: 0.15;
             position: absolute;
-            top: 20px;
-            left: 20px;
+            top: 25px;
+            left: 30px;
             line-height: 1;
         }
 
@@ -729,8 +996,9 @@
             font-size: 16px;
             color: var(--text-primary);
             line-height: 1.8;
-            margin-bottom: 25px;
-            font-style: italic;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
         }
 
         .testimonial-card .author {
@@ -740,8 +1008,8 @@
         }
 
         .testimonial-card .author .avatar {
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--primary-bubble), var(--bubble-glow));
             display: flex;
@@ -749,13 +1017,14 @@
             justify-content: center;
             font-weight: 700;
             font-size: 18px;
+            color: var(--deep-ocean);
         }
 
         .testimonial-card .author .info h4 {
             font-family: 'Cinzel', serif;
             font-size: 16px;
             color: var(--text-primary);
-            margin-bottom: 3px;
+            margin-bottom: 4px;
         }
 
         .testimonial-card .author .info p {
@@ -763,138 +1032,249 @@
             color: var(--text-secondary);
         }
 
+        /* Stats Banner */
         .stats-banner {
-            display: flex;
-            justify-content: center;
-            gap: 60px;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
             margin-top: 80px;
-            padding: 50px;
-            background: rgba(30, 136, 229, 0.05);
-            border-radius: 20px;
+            padding: 60px;
+            background: var(--surface-highlight);
+            border-radius: 24px;
             border: 1px solid rgba(30, 136, 229, 0.2);
         }
 
         .stat-item {
             text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-item.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .stat-item .number {
             font-family: 'Space Mono', monospace;
-            font-size: 48px;
+            font-size: 52px;
             font-weight: 700;
             color: var(--primary-bubble);
             text-shadow: 0 0 30px var(--primary-bubble);
             margin-bottom: 10px;
+            display: block;
         }
 
         .stat-item .label {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
-        /* Technical Specs */
-        .tech-section {
-            background: rgba(3, 8, 16, 0.8);
+        /* Technical Specs - Comparison Table */
+        .specs-section {
+            background: linear-gradient(180deg, rgba(5, 12, 22, 0.9) 0%, rgba(10, 22, 40, 0.7) 100%);
         }
 
-        .data-panel {
-            max-width: 900px;
+        .comparison-table {
+            max-width: 1000px;
             margin: 60px auto;
-            background: rgba(10, 22, 40, 0.9);
-            border: 1px solid var(--primary-bubble);
-            border-radius: 10px;
+            background: var(--surface);
+            border-radius: 20px;
+            border: 1px solid rgba(30, 136, 229, 0.2);
             overflow: hidden;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .panel-header {
+        .comparison-table.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .comparison-header {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr;
             background: rgba(30, 136, 229, 0.15);
-            padding: 15px 25px;
-            border-bottom: 1px solid var(--primary-bubble);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            border-bottom: 1px solid rgba(30, 136, 229, 0.3);
         }
 
-        .panel-header h3 {
+        .comparison-header .cell {
+            padding: 25px;
             font-family: 'Space Mono', monospace;
-            font-size: 14px;
-            color: var(--primary-bubble);
+            font-size: 13px;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
         }
 
-        .panel-header .status {
-            font-family: 'Space Mono', monospace;
-            font-size: 11px;
-            color: #4CAF50;
-            padding: 5px 12px;
-            background: rgba(76, 175, 80, 0.1);
-            border-radius: 3px;
+        .comparison-header .cell.highlight {
+            color: var(--primary-bubble);
+            text-align: center;
         }
 
-        .panel-body {
-            padding: 30px 25px;
+        .comparison-row {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr;
+            border-bottom: 1px solid rgba(30, 136, 229, 0.1);
+            transition: background 0.3s ease;
         }
 
-        .spec-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 0;
-            border-bottom: 1px dashed rgba(30, 136, 229, 0.2);
-        }
-
-        .spec-row:last-child {
+        .comparison-row:last-child {
             border-bottom: none;
         }
 
-        .spec-row .label {
-            font-family: 'Space Mono', monospace;
-            font-size: 13px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
+        .comparison-row:hover {
+            background: rgba(30, 136, 229, 0.05);
         }
 
-        .spec-row .value {
-            font-family: 'Space Mono', monospace;
-            font-size: 14px;
+        .comparison-row .cell {
+            padding: 25px;
+            font-size: 15px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+        }
+
+        .comparison-row .cell:first-child {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .comparison-row .cell.highlight {
+            justify-content: center;
             color: var(--primary-bubble);
             font-weight: 600;
         }
 
-        .spec-row .bar-container {
-            width: 200px;
-            height: 6px;
-            background: rgba(30, 136, 229, 0.1);
-            border-radius: 3px;
+        .comparison-row .cell.dim {
+            justify-content: center;
+            color: var(--text-dim);
+        }
+
+        .check-icon {
+            color: #4CAF50;
+            font-size: 20px;
+        }
+
+        .cross-icon {
+            color: var(--coral-accent);
+            font-size: 20px;
+        }
+
+        /* API Preview */
+        .api-preview {
+            max-width: 900px;
+            margin: 60px auto 0;
+            background: rgba(10, 22, 40, 0.9);
+            border: 1px solid rgba(30, 136, 229, 0.3);
+            border-radius: 16px;
             overflow: hidden;
         }
 
-        .spec-row .bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-bubble), var(--bubble-glow));
-            border-radius: 3px;
-            transition: width 1s ease;
+        .api-preview-header {
+            background: rgba(30, 136, 229, 0.15);
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(30, 136, 229, 0.3);
+        }
+
+        .api-preview-header h3 {
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            color: var(--primary-bubble);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .api-preview-header .method {
+            background: var(--coral-accent);
+            color: var(--deep-ocean);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .api-preview-body {
+            padding: 25px;
+            font-family: 'Space Mono', monospace;
+            font-size: 13px;
+            color: var(--text-secondary);
+            overflow-x: auto;
+        }
+
+        .api-preview-body code {
+            display: block;
+            line-height: 1.8;
+        }
+
+        .api-preview-body .keyword { color: var(--coral-accent); }
+        .api-preview-body .string { color: var(--bubble-glow); }
+        .api-preview-body .number { color: var(--primary-bubble); }
+        .api-preview-body .comment { color: var(--text-dim); font-style: italic; }
+
+        /* Security Badges */
+        .security-badges {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 60px;
+            flex-wrap: wrap;
+        }
+
+        .security-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 25px;
+            background: var(--surface);
+            border: 1px solid rgba(30, 136, 229, 0.2);
+            border-radius: 12px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .security-badge:hover {
+            border-color: var(--primary-bubble);
+            transform: translateY(-3px);
+        }
+
+        .security-badge .icon {
+            font-size: 24px;
         }
 
         /* Conversion Section */
         .conversion-section {
-            background: rgba(5, 12, 22, 0.9);
+            background: linear-gradient(180deg, rgba(3, 8, 16, 0.95) 0%, rgba(10, 22, 40, 0.8) 100%);
             text-align: center;
         }
 
         .conversion-box {
-            max-width: 700px;
+            max-width: 750px;
             margin: 0 auto;
-            padding: 60px;
-            background: rgba(30, 136, 229, 0.05);
-            border: 2px solid var(--primary-bubble);
-            border-radius: 25px;
+            padding: 70px;
+            background: var(--surface);
+            border: 2px solid rgba(30, 136, 229, 0.3);
+            border-radius: 32px;
             position: relative;
             overflow: hidden;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .conversion-box.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .conversion-box::before {
@@ -904,11 +1284,11 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(30, 136, 229, 0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
+            background: radial-gradient(circle, rgba(30, 136, 229, 0.08) 0%, transparent 60%);
+            animation: rotateGlow 25s linear infinite;
         }
 
-        @keyframes rotate {
+        @keyframes rotateGlow {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
@@ -918,9 +1298,33 @@
             z-index: 1;
         }
 
+        .urgency-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 107, 53, 0.15);
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--coral-accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+        }
+
+        .urgency-tag .pulse {
+            width: 8px;
+            height: 8px;
+            background: var(--coral-accent);
+            border-radius: 50%;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
         .conversion-box h2 {
             font-family: 'Cinzel', serif;
-            font-size: 36px;
+            font-size: 40px;
+            font-weight: 700;
             color: var(--text-primary);
             margin-bottom: 20px;
         }
@@ -932,21 +1336,20 @@
             line-height: 1.7;
         }
 
-        .conversion-box .email-form {
+        .signup-form {
             display: flex;
+            flex-direction: column;
             gap: 15px;
-            max-width: 500px;
-            margin: 0 auto;
-            flex-wrap: wrap;
+            max-width: 480px;
+            margin: 0 auto 30px;
         }
 
-        .conversion-box .email-form input {
-            flex: 1;
-            min-width: 250px;
+        .signup-form input {
+            width: 100%;
             padding: 18px 25px;
             background: rgba(10, 22, 40, 0.8);
-            border: 1px solid var(--primary-bubble);
-            border-radius: 30px;
+            border: 1px solid rgba(30, 136, 229, 0.3);
+            border-radius: 15px;
             color: var(--text-primary);
             font-family: 'Space Grotesk', sans-serif;
             font-size: 16px;
@@ -954,54 +1357,71 @@
             transition: all 0.3s ease;
         }
 
-        .conversion-box .email-form input:focus {
-            box-shadow: 0 0 20px rgba(30, 136, 229, 0.3);
+        .signup-form input:focus {
+            border-color: var(--primary-bubble);
+            box-shadow: 0 0 20px rgba(30, 136, 229, 0.2);
         }
 
-        .conversion-box .email-form input::placeholder {
+        .signup-form input::placeholder {
             color: var(--text-dim);
         }
 
-        .conversion-box .email-form button {
+        .signup-form button {
+            width: 100%;
             background: linear-gradient(135deg, var(--coral-accent), #FF8F5A);
             color: var(--deep-ocean);
-            padding: 18px 35px;
+            padding: 20px;
             border: none;
-            border-radius: 30px;
+            border-radius: 15px;
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 700;
             font-size: 16px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 30px rgba(255, 107, 53, 0.4);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 40px rgba(255, 107, 53, 0.3);
         }
 
-        .conversion-box .email-form button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 50px rgba(255, 107, 53, 0.6);
+        .signup-form button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 60px rgba(255, 107, 53, 0.4);
         }
 
-        .conversion-box .trust-badges {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 40px;
-            font-size: 13px;
-            color: var(--text-dim);
+        .alt-cta {
+            font-size: 14px;
+            color: var(--text-secondary);
         }
 
-        .conversion-box .trust-badges span {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .alt-cta a {
+            color: var(--primary-bubble);
+            text-decoration: none;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .alt-cta a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--primary-bubble);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .alt-cta a:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
         }
 
         /* Footer */
         footer {
-            background: rgba(3, 8, 16, 0.95);
-            padding: 60px 50px 30px;
+            background: rgba(3, 8, 16, 0.98);
+            padding: 80px 60px 40px;
             border-top: 1px solid rgba(30, 136, 229, 0.2);
         }
 
@@ -1009,23 +1429,71 @@
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 50px;
-            margin-bottom: 50px;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .footer-brand .logo {
+            font-family: 'Cinzel', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-bubble);
+            text-shadow: 0 0 30px var(--primary-bubble);
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .footer-brand p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            padding: 12px 18px;
+            background: rgba(15, 41, 66, 0.5);
+            border: 1px solid rgba(30, 136, 229, 0.2);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .newsletter-form input:focus {
+            border-color: var(--primary-bubble);
+        }
+
+        .newsletter-form button {
+            padding: 12px 20px;
+            background: var(--primary-bubble);
+            border: none;
+            border-radius: 10px;
+            color: var(--deep-ocean);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-form button:hover {
+            background: var(--bubble-glow);
         }
 
         .footer-column h4 {
-            font-family: 'Cinzel', serif;
-            font-size: 16px;
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
             color: var(--text-primary);
-            margin-bottom: 20px;
-        }
-
-        .footer-column p {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.7;
-            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 25px;
         }
 
         .footer-column ul {
@@ -1040,23 +1508,23 @@
             color: var(--text-secondary);
             text-decoration: none;
             font-size: 14px;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            display: inline-block;
         }
 
         .footer-column ul a:hover {
             color: var(--primary-bubble);
+            transform: translateX(5px);
         }
 
         .footer-bottom {
             max-width: 1200px;
             margin: 0 auto;
-            padding-top: 30px;
-            border-top: 1px solid rgba(30, 136, 229, 0.1);
+            padding-top: 40px;
+            border-top: 1px solid rgba(30, 136, 229, 0.15);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
         }
 
         .footer-bottom .copyright {
@@ -1070,118 +1538,27 @@
         }
 
         .footer-bottom .social-links a {
-            color: var(--text-dim);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--surface);
+            border: 1px solid rgba(30, 136, 229, 0.2);
+            border-radius: 50%;
+            color: var(--text-secondary);
             text-decoration: none;
-            font-size: 20px;
-            transition: color 0.3s ease;
+            font-size: 16px;
+            transition: all 0.3s ease;
         }
 
         .footer-bottom .social-links a:hover {
+            border-color: var(--primary-bubble);
             color: var(--primary-bubble);
+            transform: translateY(-3px);
         }
 
-        /* Scroll Animations */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            nav {
-                padding: 15px 20px;
-            }
-
-            nav .nav-links {
-                display: none;
-            }
-
-            .hero {
-                padding: 100px 20px;
-            }
-
-            .hero-bubble {
-                width: 100%;
-                max-width: 400px;
-                height: 400px;
-            }
-
-            .hero h1 {
-                font-size: 36px;
-            }
-
-            .hero .subtitle {
-                font-size: 16px;
-            }
-
-            .hero .description {
-                font-size: 16px;
-            }
-
-            section {
-                padding: 80px 20px;
-            }
-
-            .section-title {
-                font-size: 32px;
-            }
-
-            #depth-meter {
-                right: 15px;
-                padding: 15px 10px;
-            }
-
-            #depth-meter .depth-value {
-                font-size: 24px;
-            }
-
-            .flow-diagram {
-                flex-direction: column;
-            }
-
-            .flow-arrow {
-                transform: rotate(90deg);
-            }
-
-            .stats-banner {
-                gap: 30px;
-                padding: 30px 20px;
-            }
-
-            .stat-item .number {
-                font-size: 36px;
-            }
-
-            .conversion-box {
-                padding: 40px 30px;
-            }
-
-            .conversion-box h2 {
-                font-size: 28px;
-            }
-
-            .conversion-box .email-form {
-                flex-direction: column;
-            }
-
-            .conversion-box .email-form input,
-            .conversion-box .email-form button {
-                width: 100%;
-            }
-
-            .footer-bottom {
-                flex-direction: column;
-                text-align: center;
-            }
-        }
-
-        /* Loading Animation */
+        /* Loading Overlay */
         .loading-overlay {
             position: fixed;
             top: 0;
@@ -1201,31 +1578,173 @@
             visibility: hidden;
         }
 
+        .loading-content {
+            text-align: center;
+        }
+
         .loading-bubble {
             width: 80px;
             height: 80px;
-            background: radial-gradient(circle at 30% 30%, rgba(30, 136, 229, 0.5), rgba(10, 22, 40, 0.9));
+            background: radial-gradient(circle at 30% 30%, rgba(30, 136, 229, 0.6), rgba(10, 22, 40, 0.9));
             border-radius: 50%;
+            margin: 0 auto 30px;
             animation: loadingPulse 1.5s ease-in-out infinite;
         }
 
         @keyframes loadingPulse {
-            0%, 100% { 
+            0%, 100% {
                 transform: scale(1);
-                box-shadow: 0 0 30px rgba(30, 136, 229, 0.5);
+                box-shadow: 0 0 40px rgba(30, 136, 229, 0.6);
             }
-            50% { 
+            50% {
                 transform: scale(1.1);
-                box-shadow: 0 0 60px rgba(30, 136, 229, 0.8);
+                box-shadow: 0 0 80px rgba(30, 136, 229, 0.9);
             }
+        }
+
+        .loading-text {
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 60px;
+            }
+
+            .hero-cta {
+                justify-content: center;
+            }
+
+            .hero-trust {
+                justify-content: center;
+            }
+
+            .hero-right {
+                display: none;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                padding: 15px 25px;
+            }
+
+            nav .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 100px 25px 40px;
+            }
+
+            section {
+                padding: 80px 25px;
+            }
+
+            .section-header h2 {
+                font-size: 32px;
+            }
+
+            .narrative-block {
+                padding: 30px;
+            }
+
+            .flow-container {
+                flex-direction: column;
+                gap: 30px;
+            }
+
+            .flow-connector {
+                width: 2px;
+                height: 40px;
+                transform: rotate(90deg);
+            }
+
+            .flow-connector::after {
+                right: auto;
+                top: auto;
+                bottom: -8px;
+                left: 50%;
+                transform: translateX(-50%);
+                border-left: 5px solid transparent;
+                border-right: 5px solid transparent;
+                border-top: 8px solid var(--bubble-glow);
+                border-bottom: none;
+            }
+
+            #depth-meter {
+                right: 15px;
+                padding: 15px 10px;
+            }
+
+            #depth-meter .depth-value {
+                font-size: 24px;
+            }
+
+            .comparison-table {
+                overflow-x: auto;
+            }
+
+            .comparison-header,
+            .comparison-row {
+                min-width: 500px;
+            }
+
+            .conversion-box {
+                padding: 40px 30px;
+            }
+
+            .conversion-box h2 {
+                font-size: 28px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .cursor,
+            .cursor-dot {
+                display: none;
+            }
+        }
+
+        /* Parallax Container */
+        .parallax-layer {
+            transition: transform 0.1s ease-out;
+            will-change: transform;
         }
     </style>
 </head>
 <body>
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loading">
-        <div class="loading-bubble"></div>
+        <div class="loading-content">
+            <div class="loading-bubble"></div>
+            <div class="loading-text">Descending...</div>
+        </div>
     </div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-dot" id="cursor-dot"></div>
 
     <!-- Bubble Canvas -->
     <canvas id="bubble-canvas"></canvas>
@@ -1240,207 +1759,226 @@
         </div>
     </div>
 
-    <!-- Bioluminescent Creatures Container -->
+    <!-- Creatures Container -->
     <div id="creatures"></div>
 
     <!-- Content -->
     <div class="content">
         <!-- Navigation -->
         <nav id="navbar">
-            <div class="logo">Engine AI</div>
+            <a href="#" class="logo">Engine AI</a>
             <div class="nav-links">
-                <a href="#problem">Problem</a>
-                <a href="#solution">Solution</a>
+                <a href="#narrative">Why</a>
                 <a href="#showcase">Product</a>
-                <a href="#specs">Technical</a>
+                <a href="#proof">Stories</a>
+                <a href="#specs">Edge</a>
             </div>
-            <a href="#get-access" class="cta-button">Get Early Access</a>
+            <a href="#access" class="magnetic-button"><span>Start Your Journey</span></a>
         </nav>
 
         <!-- Hero Section -->
         <section class="hero" id="hero">
-            <div class="hero-content">
-                <div class="hero-bubble">
-                    <div class="hero-bubble-content">
-                        <h1>Intelligence<br/>That Flows</h1>
+            <div class="hero-left">
+                <div class="hero-badge">
+                    <span class="dot"></span>
+                    <span>Now in Early Access</span>
+                </div>
+                <h1>
+                    AI That Remembers
+                    <span class="highlight">Everything</span>
+                </h1>
+                <p class="value-prop">
+                    Engine AI creates an unbroken thread of context across every conversation. 
+                    No more starting from zero. No more lost insights.
+                </p>
+                <div class="hero-cta">
+                    <a href="#access" class="magnetic-cta">
+                        Start Your Journey
+                        <span class="arrow">→</span>
+                    </a>
+                </div>
+                <div class="hero-trust">
+                    <span class="label">Trusted by</span>
+                    <div class="avatars">
+                        <div class="avatar">SK</div>
+                        <div class="avatar">MR</div>
+                        <div class="avatar">EW</div>
+                    </div>
+                    <span class="count"><strong>847</strong> builders diving in</span>
+                </div>
+            </div>
+            <div class="hero-right parallax-layer" data-speed="0.05">
+                <div class="hero-visual">
+                    <div class="depth-ring"></div>
+                    <div class="depth-ring"></div>
+                    <div class="depth-ring"></div>
+                    <div class="hero-core">
+                        <div class="metric">∞</div>
+                        <div class="label">Context</div>
+                    </div>
+                    <div class="floating-nodes">
+                        <div class="node"></div>
+                        <div class="node"></div>
+                        <div class="node"></div>
+                        <div class="node"></div>
+                        <div class="node"></div>
                     </div>
                 </div>
-                <p class="subtitle">Context-Aware AI That Remembers</p>
-                <p class="description">
-                    Engine AI transforms fragmented conversations into continuous intelligence. 
-                    Our context-aware architecture ensures every insight builds on what came before—
-                    no more starting from zero, no more lost context.
-                </p>
-                <div class="cta-group">
-                    <a href="#get-access" class="primary-cta">Start Your Journey</a>
-                    <a href="#solution" class="secondary-cta">See How It Works</a>
+            </div>
+        </section>
+
+        <!-- Narrative Section -->
+        <section class="narrative-section" id="narrative">
+            <div class="section-header">
+                <span class="overline">The Problem</span>
+                <h2>Every Conversation Starts at Zero</h2>
+                <p>Modern AI tools are trapped in the present moment, forgetting everything as soon as you hit "new chat."</p>
+            </div>
+            <div class="narrative-container">
+                <div class="narrative-block">
+                    <div class="chapter">Chapter I</div>
+                    <h3>The Amnesic Assistant</h3>
+                    <p>
+                        You've been there. You spent weeks exploring a complex problem with AI, 
+                        refining architecture decisions, documenting tradeoffs, building mental models together. 
+                        Then you open a new chat and... silence. All that shared context? Gone. 
+                        Every insight you uncovered? Lost in the void.
+                    </p>
+                    <div class="stat-highlight">
+                        <span class="number">2.4h</span>
+                        <span class="text">wasted weekly rebuilding context</span>
+                    </div>
+                </div>
+                <div class="narrative-block">
+                    <div class="chapter">Chapter II</div>
+                    <h3>The Fractured Mind</h3>
+                    <p>
+                        The problem isn't just annoyance—it's opportunity cost. When your AI can't remember 
+                        yesterday's conversation, it can't build on today's breakthrough. No compound interest on 
+                        insights. No emergent understanding. Just isolated interactions that fade like ripples in a pond.
+                    </p>
+                    <div class="stat-highlight">
+                        <span class="number">87%</span>
+                        <span class="text">of professionals report context loss</span>
+                    </div>
+                </div>
+                <div class="narrative-block">
+                    <div class="chapter">Chapter III</div>
+                    <h3>A Better Way</h3>
+                    <p>
+                        What if AI worked more like a trusted colleague? Someone who remembers your preferences, 
+                        learns from your feedback, and builds on shared history? That's Engine AI—an intelligence 
+                        that flows continuously across time, context, and conversation.
+                    </p>
+                    <div class="stat-highlight">
+                        <span class="number">∞</span>
+                        <span class="text">conversation memory horizon</span>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Problem Section -->
-        <section class="problem-section" id="problem">
-            <h2 class="section-title fade-in">The Fragmentation Crisis</h2>
-            <p class="section-subtitle fade-in">
-                Modern AI tools create isolated islands of conversation. Every new session wipes the slate clean, 
-                forcing you to rebuild context from scratch.
-            </p>
-            <div class="fractured-blocks">
-                <div class="fractured-block fade-in">
-                    <div class="icon">🧩</div>
-                    <h3>Broken Continuity</h3>
-                    <p>Each conversation starts from zero. Previous insights disappear into the void, 
-                       leaving you to constantly re-explain your context and repeat yourself.</p>
-                    <div class="fracture-line"></div>
-                </div>
-                <div class="fractured-block fade-in">
-                    <div class="icon">📊</div>
-                    <h3>Lost Knowledge</h3>
-                    <p>Valuable insights trapped in isolated chat sessions. No way to aggregate learning 
-                       across conversations or build on past discoveries.</p>
-                    <div class="fracture-line"></div>
-                </div>
-                <div class="fractured-block fade-in">
-                    <div class="icon">⏱️</div>
-                    <h3>Wasted Time</h3>
-                    <p>Professionals lose 2+ hours weekly reconstructing conversation context. 
-                       The overhead of re-education compounds with every new session.</p>
-                    <div class="fracture-line"></div>
-                </div>
-                <div class="fractured-block fade-in">
-                    <div class="icon">🔄</div>
-                    <h3>Context Drift</h3>
-                    <p>Without persistent memory, AI responses drift over time. Contradictory advice emerges 
-                       as the system forgets what it told you yesterday.</p>
-                    <div class="fracture-line"></div>
-                </div>
+        <!-- Flow Solution -->
+        <section class="flow-section" id="flow">
+            <div class="section-header">
+                <span class="overline">The Solution</span>
+                <h2>Intelligence That Flows</h2>
+                <p>From fragmented inputs to continuous wisdom</p>
             </div>
-        </section>
-
-        <!-- Solution Section -->
-        <section class="solution-section" id="solution">
-            <h2 class="section-title fade-in">The Engine AI Flow</h2>
-            <p class="section-subtitle fade-in">
-                A continuous intelligence pipeline that transforms fragmented inputs into contextual wisdom
-            </p>
-            <div class="flow-diagram">
-                <div class="flow-step fade-in">
-                    <div class="step-icon">🌊</div>
+            <div class="flow-container">
+                <div class="flow-node">
+                    <span class="icon">🌊</span>
                     <h4>Input Stream</h4>
-                    <p>Conversations flow in naturally</p>
+                    <p>Every conversation captured</p>
                 </div>
-                <div class="flow-arrow">→</div>
-                <div class="flow-step fade-in">
-                    <div class="step-icon">🏞️</div>
+                <div class="flow-connector"></div>
+                <div class="flow-node">
+                    <span class="icon">🏞️</span>
                     <h4>Context Lake</h4>
-                    <p>Every insight stored & indexed</p>
+                    <p>All insights indexed</p>
                 </div>
-                <div class="flow-arrow">→</div>
-                <div class="flow-step fade-in">
-                    <div class="step-icon">⚡</div>
+                <div class="flow-connector"></div>
+                <div class="flow-node">
+                    <span class="icon">⚡</span>
                     <h4>Insight Rapids</h4>
-                    <p>Patterns emerge & connect</p>
+                    <p>Patterns emerge</p>
                 </div>
-                <div class="flow-arrow">→</div>
-                <div class="flow-step fade-in">
-                    <div class="step-icon">🌊</div>
-                    <h4>Output Current</h4>
-                    <p>Contextual responses flow out</p>
-                </div>
-            </div>
-            <div class="solution-benefits">
-                <div class="benefit-card fade-in">
-                    <div class="benefit-number">100%</div>
-                    <h3>Conversation Retention</h3>
-                    <p>Every interaction preserved and searchable across your entire history</p>
-                </div>
-                <div class="benefit-card fade-in">
-                    <div class="benefit-number">0s</div>
-                    <h3>Cold Start Time</h3>
-                    <p>Zero context rebuilding—pick up exactly where you left off</p>
-                </div>
-                <div class="benefit-card fade-in">
-                    <div class="benefit-number">∞</div>
-                    <h3>Memory Horizon</h3>
-                    <p>Unlimited context window with intelligent retrieval</p>
+                <div class="flow-connector"></div>
+                <div class="flow-node">
+                    <span class="icon">🌊</span>
+                    <h4>Output Flow</h4>
+                    <p>Contextual responses</p>
                 </div>
             </div>
         </section>
 
         <!-- Product Showcase -->
         <section class="showcase-section" id="showcase">
-            <h2 class="section-title fade-in">Experience Continuity</h2>
-            <p class="section-subtitle fade-in">
-                See how Engine AI maintains conversation flow across sessions
-            </p>
-            <div class="interface-mockup fade-in">
-                <div class="mockup-header">
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                    <div class="dot"></div>
-                    <div class="title">Engine AI — Continuous Conversation</div>
-                </div>
-                <div class="mockup-body">
-                    <div class="conversation-thread">
-                        <div class="message">
-                            <div class="avatar">🤖</div>
-                            <div class="bubble">
-                                <div class="sender">Engine AI • Session 1</div>
-                                <div class="text">
-                                    I've helped you design the microservices architecture for your e-commerce platform. 
-                                    We settled on event-driven communication with RabbitMQ and separate services for 
-                                    inventory, orders, and payments.
-                                </div>
-                                <div class="context-hint">📌 Context captured: Architecture decisions, tech stack</div>
-                            </div>
-                        </div>
-                        <div class="message user">
-                            <div class="avatar">👤</div>
-                            <div class="bubble">
-                                <div class="sender">You • 3 days later</div>
-                                <div class="text">
-                                    Now I need to add a recommendation service. How should it fit into what we built?
-                                </div>
-                            </div>
-                        </div>
-                        <div class="message">
-                            <div class="avatar">🤖</div>
-                            <div class="bubble">
-                                <div class="sender">Engine AI • Session 2 (Context Retrieved)</div>
-                                <div class="text">
-                                    Based on your existing event-driven architecture with RabbitMQ, I recommend implementing 
-                                    the recommendation service as a subscriber to order completed events. It can:
-                                    <br><br>
-                                    1. Listen to purchase events to build user profiles<br>
-                                    2. Publish recommendations to a dedicated queue<br>
-                                    3. Integrate with your existing inventory service API
-                                    <br><br>
-                                    This maintains consistency with your current design patterns.
-                                </div>
-                                <div class="context-hint">🔗 Context retrieved: Previous architecture, service boundaries, messaging patterns</div>
-                            </div>
-                        </div>
+            <div class="section-header">
+                <span class="overline">Live Demo</span>
+                <h2>See Continuity in Action</h2>
+                <p>Watch how Engine AI maintains conversation flow across sessions</p>
+            </div>
+            <div class="terminal-container">
+                <div class="terminal-header">
+                    <div class="dots">
+                        <div class="dot red"></div>
+                        <div class="dot yellow"></div>
+                        <div class="dot green"></div>
                     </div>
+                    <div class="title">engine-ai — continuous conversation session</div>
                 </div>
-                <div class="continuity-indicator">
-                    <div class="text">CONVERSATION CONTINUITY SCORE</div>
-                    <div class="metric">94.7%</div>
+                <div class="terminal-body">
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">user@session-1:~$</span>
+                        <span class="terminal-content">
+                            <span class="timestamp">[Mar 7]</span> Help me design a microservices architecture for e-commerce<br>
+                            <span class="timestamp">[Mar 7]</span> <span class="context-badge">Context: Architecture, Event-driven, RabbitMQ</span>
+                        </span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">ai@engine:</span>
+                        <span class="terminal-content">
+                            Designed event-driven architecture with separate services for inventory, orders, payments.<br>
+                            Messaging via RabbitMQ. Event sourcing for audit trails.
+                        </span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt user">user@session-2:~$</span>
+                        <span class="terminal-content">
+                            <span class="timestamp">[Mar 10 — 3 days later]</span> Now I need a recommendation service. How to fit it in?
+                        </span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt">ai@engine:</span>
+                        <span class="terminal-content">
+                            <span class="context-badge">Retrieved: Previous architecture, service boundaries</span><br>
+                            Subscribe to order-completed events → Build user profiles → Publish recommendations<br>
+                            Integrates with your existing inventory service API. Consistent with current design patterns.
+                        </span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="terminal-prompt user">user@session-2:~$</span>
+                        <span class="terminal-content">
+                            Perfect. What about caching layer?<span class="typing-indicator"><span></span><span></span><span></span></span>
+                        </span>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Social Proof -->
-        <section class="social-proof-section" id="proof">
-            <h2 class="section-title fade-in">Trusted by Builders</h2>
-            <p class="section-subtitle fade-in">
-                Early adopters are transforming how they work with AI
-            </p>
-            <div class="testimonial-grid">
-                <div class="testimonial-card fade-in">
+        <section class="proof-section" id="proof">
+            <div class="section-header">
+                <span class="overline">Stories</span>
+                <h2>Builders Who've Dived Deeper</h2>
+                <p>Early adopters transforming how they work with AI</p>
+            </div>
+            <div class="proof-grid">
+                <div class="testimonial-card">
                     <p class="quote">
-                        "Engine AI eliminated the most frustrating part of working with AI tools—constantly 
-                        re-explaining my project context. Now it just knows. It's like having a colleague 
-                        who actually pays attention."
+                        "Engine AI eliminated the most frustrating part—constantly re-explaining my project context. 
+                        Now it just knows. It's like having a colleague who actually pays attention."
                     </p>
                     <div class="author">
                         <div class="avatar">SK</div>
@@ -1450,10 +1988,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="testimonial-card fade-in">
+                <div class="testimonial-card">
                     <p class="quote">
-                        "The continuity is game-changing. I can reference a conversation from three weeks ago 
-                        and Engine AI pulls it into the current context seamlessly. It's how AI should work."
+                        "The continuity is game-changing. I can reference a conversation from three weeks ago and 
+                        Engine AI pulls it into the current context seamlessly. This is how AI should work."
                     </p>
                     <div class="author">
                         <div class="avatar">MR</div>
@@ -1463,7 +2001,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="testimonial-card fade-in">
+                <div class="testimonial-card">
                     <p class="quote">
                         "As a researcher, I need AI that remembers the nuances of ongoing investigations. 
                         Engine AI's persistent context has transformed my literature review process."
@@ -1477,102 +2015,129 @@
                     </div>
                 </div>
             </div>
-            <div class="stats-banner fade-in">
+            <div class="stats-banner">
                 <div class="stat-item">
-                    <div class="number">2.4h</div>
-                    <div class="label">Saved per week</div>
+                    <span class="number">2.4h</span>
+                    <span class="label">Saved per week</span>
                 </div>
                 <div class="stat-item">
-                    <div class="number">94%</div>
-                    <div class="label">Context accuracy</div>
+                    <span class="number">94%</span>
+                    <span class="label">Context accuracy</span>
                 </div>
                 <div class="stat-item">
-                    <div class="number">∞</div>
-                    <div class="label">Conversation length</div>
+                    <span class="number">∞</span>
+                    <span class="label">Conversation length</span>
                 </div>
             </div>
         </section>
 
         <!-- Technical Specs -->
-        <section class="tech-section" id="specs">
-            <h2 class="section-title fade-in">Technical Specifications</h2>
-            <p class="section-subtitle fade-in">
-                Built for scale, security, and seamless integration
-            </p>
-            <div class="data-panel fade-in">
-                <div class="panel-header">
-                    <h3>Engine AI System Status</h3>
-                    <div class="status">● OPERATIONAL</div>
+        <section class="specs-section" id="specs">
+            <div class="section-header">
+                <span class="overline">The Edge</span>
+                <h2>Technical Superiority</h2>
+                <p>Built for scale, security, and seamless integration</p>
+            </div>
+            <div class="comparison-table">
+                <div class="comparison-header">
+                    <div class="cell">Feature</div>
+                    <div class="cell highlight">Engine AI</div>
+                    <div class="cell">Others</div>
                 </div>
-                <div class="panel-body">
-                    <div class="spec-row">
-                        <div class="label">Context Window</div>
-                        <div class="value">Unlimited (tiered retrieval)</div>
-                    </div>
-                    <div class="spec-row">
-                        <div class="label">Memory Retention</div>
-                        <div class="bar-container">
-                            <div class="bar" style="width: 100%"></div>
-                        </div>
-                    </div>
-                    <div class="spec-row">
-                        <div class="label">Vector Index</div>
-                        <div class="value">FAISS + HNSW (O(log n) retrieval)</div>
-                    </div>
-                    <div class="spec-row">
-                        <div class="label">Search Accuracy</div>
-                        <div class="bar-container">
-                            <div class="bar" style="width: 94%"></div>
-                        </div>
-                    </div>
-                    <div class="spec-row">
-                        <div class="label">Data Encryption</div>
-                        <div class="value">AES-256-GCM at rest</div>
-                    </div>
-                    <div class="spec-row">
-                        <div class="label">API Latency (p95)</div>
-                        <div class="value">120ms</div>
-                    </div>
-                    <div class="spec-row">
-                        <div class="label">Uptime SLA</div>
-                        <div class="bar-container">
-                            <div class="bar" style="width: 99.9%"></div>
-                        </div>
-                    </div>
-                    <div class="spec-row">
-                        <div class="label">Supported Models</div>
-                        <div class="value">GPT-4, Claude, LLaMA, Mistral</div>
-                    </div>
-                    <div class="spec-row">
-                        <div class="label">Context Fusion</div>
-                        <div class="bar-container">
-                            <div class="bar" style="width: 87%"></div>
-                        </div>
-                    </div>
-                    <div class="spec-row">
-                        <div class="label">GDPR Compliant</div>
-                        <div class="value">✓ Yes (EU servers available)</div>
-                    </div>
+                <div class="comparison-row">
+                    <div class="cell">Context Window</div>
+                    <div class="cell highlight">Unlimited</div>
+                    <div class="cell dim">128K tokens</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="cell">Cross-Session Memory</div>
+                    <div class="cell highlight"><span class="check-icon">✓</span></div>
+                    <div class="cell dim"><span class="cross-icon">✗</span></div>
+                </div>
+                <div class="comparison-row">
+                    <div class="cell">Vector Search</div>
+                    <div class="cell highlight">O(log n)</div>
+                    <div class="cell dim">Linear scan</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="cell">Data Encryption</div>
+                    <div class="cell highlight">AES-256-GCM</div>
+                    <div class="cell dim">Varies</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="cell">API Latency (p95)</div>
+                    <div class="cell highlight">120ms</div>
+                    <div class="cell dim">300ms+</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="cell">GDPR Compliance</div>
+                    <div class="cell highlight"><span class="check-icon">✓</span></div>
+                    <div class="cell dim"><span class="cross-icon">✗</span></div>
+                </div>
+                <div class="comparison-row">
+                    <div class="cell">EU Servers</div>
+                    <div class="cell highlight"><span class="check-icon">✓</span></div>
+                    <div class="cell dim"><span class="cross-icon">✗</span></div>
+                </div>
+            </div>
+            <div class="api-preview">
+                <div class="api-preview-header">
+                    <h3>API Preview</h3>
+                    <span class="method">POST</span>
+                </div>
+                <div class="api-preview-body">
+                    <code>
+<span class="comment">// Query with full conversation context</span>
+<span class="keyword">curl</span> -X POST https://api.engine.ai/v1/chat \<br>
+&nbsp;&nbsp;-H <span class="string">"Authorization: Bearer $ENGINE_API_KEY"</span> \<br>
+&nbsp;&nbsp;-d <span class="string">'{
+  "message": "Continue our architecture discussion",
+  "session_id": "usr_123abc",
+  "context_depth": "unlimited"
+}'</span>
+                    </code>
+                </div>
+            </div>
+            <div class="security-badges">
+                <div class="security-badge">
+                    <span class="icon">🔒</span>
+                    <span>AES-256 encryption</span>
+                </div>
+                <div class="security-badge">
+                    <span class="icon">🛡️</span>
+                    <span>SOC 2 Type II</span>
+                </div>
+                <div class="security-badge">
+                    <span class="icon">🇪🇺</span>
+                    <span>GDPR compliant</span>
+                </div>
+                <div class="security-badge">
+                    <span class="icon">✓</span>
+                    <span>99.9% uptime SLA</span>
                 </div>
             </div>
         </section>
 
         <!-- Conversion Section -->
-        <section class="conversion-section" id="get-access">
-            <div class="conversion-box fade-in">
+        <section class="conversion-section" id="access">
+            <div class="conversion-box">
+                <div class="urgency-tag">
+                    <span class="pulse"></span>
+                    <span>Limited early access</span>
+                </div>
                 <h2>Ready to Dive Deeper?</h2>
                 <p>
                     Join the waitlist for early access to Engine AI. Be among the first to experience 
                     AI that truly remembers your journey.
                 </p>
-                <form class="email-form" onsubmit="handleSubmit(event)">
-                    <input type="email" placeholder="Enter your email address" required>
-                    <button type="submit">Request Access</button>
+                <form class="signup-form" onsubmit="handleSubmit(event)">
+                    <input type="text" placeholder="Full name" required>
+                    <input type="email" placeholder="Work email" required>
+                    <input type="text" placeholder="Company name">
+                    <button type="submit">Request Early Access →</button>
                 </form>
-                <div class="trust-badges">
-                    <span>🔒 Secure signup</span>
-                    <span>✓ No spam, ever</span>
-                    <span>🚀 Early access priority</span>
+                <div class="alt-cta">
+                    Not ready to commit? <a href="#showcase">Watch the demo →</a>
                 </div>
             </div>
         </section>
@@ -1580,26 +2145,30 @@
         <!-- Footer -->
         <footer>
             <div class="footer-content">
-                <div class="footer-column">
-                    <h4>Engine AI</h4>
+                <div class="footer-brand">
+                    <div class="logo">Engine AI</div>
                     <p>
                         Intelligence that flows. Transforming fragmented AI conversations into 
                         continuous, contextual wisdom.
                     </p>
+                    <div class="newsletter-form">
+                        <input type="email" placeholder="Subscribe to updates">
+                        <button>→</button>
+                    </div>
                 </div>
                 <div class="footer-column">
                     <h4>Product</h4>
                     <ul>
-                        <li><a href="#solution">How It Works</a></li>
+                        <li><a href="#flow">How It Works</a></li>
                         <li><a href="#specs">Technical Specs</a></li>
                         <li><a href="#showcase">Live Demo</a></li>
-                        <li><a href="#get-access">Pricing</a></li>
+                        <li><a href="#access">Pricing</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
                     <h4>Company</h4>
                     <ul>
-                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">About</a></li>
                         <li><a href="#">Blog</a></li>
                         <li><a href="#">Careers</a></li>
                         <li><a href="#">Contact</a></li>
@@ -1608,8 +2177,8 @@
                 <div class="footer-column">
                     <h4>Legal</h4>
                     <ul>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy</a></li>
+                        <li><a href="#">Terms</a></li>
                         <li><a href="#">Security</a></li>
                         <li><a href="#">GDPR</a></li>
                     </ul>
@@ -1630,19 +2199,48 @@
     </div>
 
     <script>
-        // Remove loading screen
+        // Loading screen
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.getElementById('loading').classList.add('hidden');
-            }, 800);
+            }, 1000);
         });
 
-        // Bubble Canvas Animation
+        // Custom cursor
+        const cursor = document.getElementById('cursor');
+        const cursorDot = document.getElementById('cursor-dot');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursorDot.style.left = mouseX - 3 + 'px';
+            cursorDot.style.top = mouseY - 3 + 'px';
+        });
+
+        // Smooth cursor follow
+        function animateCursor() {
+            const dx = mouseX - cursorX;
+            const dy = mouseY - cursorY;
+            cursorX += dx * 0.15;
+            cursorY += dy * 0.15;
+            cursor.style.left = cursorX - 10 + 'px';
+            cursor.style.top = cursorY - 10 + 'px';
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        // Cursor hover effects
+        document.querySelectorAll('a, button, .flow-node, .narrative-block').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // Bubble canvas (preserved from original)
         const canvas = document.getElementById('bubble-canvas');
         const ctx = canvas.getContext('2d');
         let bubbles = [];
-        let mouseX = 0;
-        let mouseY = 0;
         let scrollDepth = 0;
 
         function resizeCanvas() {
@@ -1673,7 +2271,6 @@
                 this.wobble += this.wobbleSpeed;
                 this.x += Math.sin(this.wobble) * 0.5 + this.speedX;
 
-                // Mouse interaction
                 const dx = this.x - mouseX;
                 const dy = this.y - mouseY;
                 const dist = Math.sqrt(dx * dx + dy * dy);
@@ -1683,9 +2280,7 @@
                     this.y += (dy / dist) * force * 5;
                 }
 
-                if (this.y < -50) {
-                    this.reset();
-                }
+                if (this.y < -50) this.reset();
             }
 
             draw() {
@@ -1710,7 +2305,6 @@
                 ctx.fillStyle = gradient;
                 ctx.fill();
 
-                // Highlight
                 ctx.beginPath();
                 ctx.arc(this.x - this.radius * 0.3, this.y - this.radius * 0.3, this.radius * 0.2, 0, Math.PI * 2);
                 ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity * 0.3})`;
@@ -1718,7 +2312,6 @@
             }
         }
 
-        // Initialize bubbles
         for (let i = 0; i < 50; i++) {
             bubbles.push(new Bubble());
         }
@@ -1733,12 +2326,6 @@
         }
         animateBubbles();
 
-        // Mouse tracking
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-
         // Depth meter
         window.addEventListener('scroll', () => {
             const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
@@ -1747,21 +2334,12 @@
             document.getElementById('depth-meter').querySelector('.depth-value').textContent = scrollDepth;
             document.getElementById('depth-fill').style.height = (scrollPercent * 100) + '%';
 
-            // Darken background as we scroll deeper
-            const darkening = Math.min(scrollPercent * 0.5, 0.5);
-            document.body.style.background = `rgba(${10 - darkening * 5}, ${22 - darkening * 10}, ${40 - darkening * 15}, 1)`;
-
-            // Update sections
-            const sections = document.querySelectorAll('section');
-            sections.forEach(section => {
-                const rect = section.getBoundingClientRect();
-                if (rect.top < window.innerHeight / 2) {
-                    section.classList.add('deep');
-                }
-                if (rect.top < window.innerHeight / 4) {
-                    section.classList.add('deeper');
-                }
-            });
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
         });
 
         // Bioluminescent creatures
@@ -1801,13 +2379,12 @@
             animate();
         }
 
-        // Spawn creatures periodically
         setInterval(spawnCreature, 5000);
         setTimeout(spawnCreature, 2000);
 
-        // Scroll animations
+        // Scroll animations with Intersection Observer
         const observerOptions = {
-            threshold: 0.1,
+            threshold: 0.15,
             rootMargin: '0px 0px -50px 0px'
         };
 
@@ -1819,19 +2396,36 @@
             });
         }, observerOptions);
 
-        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-        // Navbar scroll effect
-        const navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
+        document.querySelectorAll('.section-header, .narrative-block, .flow-node, .flow-connector, .terminal-container, .testimonial-card, .stat-item, .comparison-table, .conversion-box').forEach(el => {
+            observer.observe(el);
         });
 
-        // Smooth scroll for nav links
+        // Parallax effect for hero visual
+        document.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.02;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.02;
+            
+            document.querySelectorAll('.parallax-layer').forEach(layer => {
+                const speed = layer.dataset.speed || 0.05;
+                layer.style.transform = `translate(${moveX * speed * 100}px, ${moveY * speed * 100}px)`;
+            });
+        });
+
+        // Magnetic button effect
+        document.querySelectorAll('.magnetic-button, .magnetic-cta').forEach(button => {
+            button.addEventListener('mousemove', (e) => {
+                const rect = button.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                button.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+            });
+
+            button.addEventListener('mouseleave', () => {
+                button.style.transform = '';
+            });
+        });
+
+        // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -1845,27 +2439,44 @@
         // Form submission
         function handleSubmit(e) {
             e.preventDefault();
-            const email = e.target.querySelector('input').value;
-            alert(`Thanks! We've added ${email} to the early access waitlist. Dive deeper soon!`);
+            const inputs = e.target.querySelectorAll('input');
+            const values = Array.from(inputs).map(input => input.value);
+            alert(`Welcome aboard, ${values[0]}! We'll reach out to ${values[1]} at ${values[2]} soon. Prepare to dive deeper!`);
             e.target.reset();
         }
 
-        // Animate spec bars on scroll
-        const specBars = document.querySelectorAll('.spec-row .bar');
-        const barObserver = new IntersectionObserver((entries) => {
+        // Animate stats on scroll
+        const statNumbers = document.querySelectorAll('.stat-item .number');
+        const statsObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    const width = entry.target.style.width;
-                    entry.target.style.width = '0%';
-                    setTimeout(() => {
-                        entry.target.style.width = width;
-                    }, 100);
-                    barObserver.unobserve(entry.target);
+                    const target = entry.target;
+                    const finalValue = target.textContent;
+                    
+                    if (finalValue === '∞') return;
+                    
+                    const numericValue = parseFloat(finalValue);
+                    const unit = finalValue.replace(/[0-9.]/g, '');
+                    let current = 0;
+                    const increment = numericValue / 50;
+                    
+                    const animate = () => {
+                        current += increment;
+                        if (current < numericValue) {
+                            target.textContent = current.toFixed(1) + unit;
+                            requestAnimationFrame(animate);
+                        } else {
+                            target.textContent = finalValue;
+                        }
+                    };
+                    animate();
+                    
+                    statsObserver.unobserve(target);
                 }
             });
         }, { threshold: 0.5 });
 
-        specBars.forEach(bar => barObserver.observe(bar));
+        statNumbers.forEach(stat => statsObserver.observe(stat));
     </script>
 </body>
 </html>
